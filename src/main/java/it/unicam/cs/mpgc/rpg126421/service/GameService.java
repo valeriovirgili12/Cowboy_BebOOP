@@ -1,0 +1,130 @@
+package it.unicam.cs.mpgc.rpg126421.service;
+
+import it.unicam.cs.mpgc.rpg126421.model.character.crew.CrewMember;
+import it.unicam.cs.mpgc.rpg126421.model.episode.Choice;
+import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
+import it.unicam.cs.mpgc.rpg126421.model.episode.Outcome;
+import it.unicam.cs.mpgc.rpg126421.model.episode.Scene;
+import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Logica di gioco principale.
+ * Applica le conseguenze delle scelte e avanza lo stato della partita.
+ * Non conosce la UI — parla solo con GameSession.
+ */
+public class GameService {
+
+    private final GameSession session;
+
+    public GameService(GameSession session) {
+        if (session == null) throw new IllegalArgumentException("Session cannot be null");
+        this.session = session;
+    }
+
+    // ── Scelte ───────────────────────────────────────────────────────────────
+
+    /**
+     * Applica l'outcome di una scelta alla sessione corrente.
+     * Aggiorna woolong, morale, trust dei crew member e flag di mondo.
+     */
+    public void applyChoice(Choice choice) {
+        Outcome outcome = choice.getOutcome();
+
+        // Woolong
+        int woolongDelta = outcome.getWoolongDelta();
+        if (woolongDelta >= 0) {
+            session.getFinance().earn(woolongDelta);
+        } else {
+            session.getFinance().spend(-woolongDelta);
+        }
+
+        // Morale capitano
+        session.getCaptain().changeMorale(outcome.getMoraleDelta());
+
+        // Trust crew member
+        outcome.getTrustDeltas().forEach((memberName, delta) ->
+                session.getCrew().stream()
+                        .filter(m -> m.getName().equals(memberName))
+                        .findFirst()
+                        .ifPresent(m -> m.changeTrust(delta))
+        );
+
+        // Flag di mondo
+        outcome.getFlagsToSet().forEach((key, value) ->
+                session.getWorldState().setFlag(key, value)
+        );
+    }
+
+    // ── Scene ────────────────────────────────────────────────────────────────
+
+    /**
+     * Restituisce le scelte disponibili nella scena corrente.
+     */
+    public List<Choice> getAvailableChoices(Scene scene) {
+        return scene.getAvailableChoices(session);
+    }
+
+    /**
+     * Applica una scelta e segna la scena come completata.
+     */
+    public void resolveScene(Scene scene, Choice choice) {
+        if (!choice.isAvailable(session))
+            throw new IllegalStateException("Choice not available: " + choice.getText());
+        applyChoice(choice);
+        scene.complete();
+    }
+
+    // ── Episodi ──────────────────────────────────────────────────────────────
+
+    /**
+     * Avvia il prossimo episodio non ancora iniziato.
+     * @return l'episodio avviato, o empty se tutti completati
+     */
+    public Optional<Episode> startNextEpisode() {
+        return session.getEpisodes().stream()
+                .filter(Episode::isNotStarted)
+                .findFirst()
+                .map(e -> {
+                    e.initialize(session);
+                    e.start();
+                    return e;
+                });
+    }
+
+    /**
+     * Completa l'episodio corrente se tutte le scene sono completate.
+     * @return true se l'episodio è stato completato
+     */
+    public boolean tryCompleteCurrentEpisode() {
+        return session.getCurrentEpisode()
+                .filter(e -> e.getScenes().stream().allMatch(Scene::isCompleted))
+                .map(e -> {
+                    e.complete();
+                    return true;
+                })
+                .orElse(false);
+    }
+
+    /**
+     * Restituisce la scena corrente dell'episodio attivo.
+     */
+    public Optional<Scene> getCurrentScene() {
+        return session.getCurrentEpisode()
+                .flatMap(Episode::getNextScene);
+    }
+
+    // ── Crew ─────────────────────────────────────────────────────────────────
+
+    /**
+     * Recluta un membro nella crew.
+     * @return false se era già presente
+     */
+    public boolean recruitCrew(CrewMember member) {
+        return session.recruitCrew(member);
+    }
+
+    public GameSession getSession() { return session; }
+}
