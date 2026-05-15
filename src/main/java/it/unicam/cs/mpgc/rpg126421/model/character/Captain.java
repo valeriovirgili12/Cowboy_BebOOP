@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg126421.model.character;
 
-import it.unicam.cs.mpgc.rpg126421.model.shared.CharacterClass;
+import it.unicam.cs.mpgc.rpg126421.model.shared.CaptainClass;
 
 /**
  * Il protagonista — il nostro Cowboy.
@@ -14,12 +14,17 @@ public class Captain extends Character {
 
     private int morale;
 
-    public Captain(String name, CharacterClass characterClass) {
-        super(name, characterClass);
+    public Captain(String name, CaptainClass captainClass) {
+        super(name, captainClass);
         this.morale = STARTING_MORALE;
     }
 
     public int getMorale() { return morale; }
+
+    // getter specifico opzionale (utile nel controller)
+    public CaptainClass getCaptainClass() {
+        return (CaptainClass) getCharacterRole();
+    }
 
     public void changeMorale(int delta) {
         this.morale = Math.clamp(this.morale + delta, MIN_MORALE, MAX_MORALE);
@@ -27,7 +32,7 @@ public class Captain extends Character {
 
     @Override
     public String toString() {
-        return "Captain{name='" + getName() + "', class=" + getCharacterClass() +
+        return "Captain{name='" + getName() + "', class=" + getCharacterRole() +
                 ", morale=" + morale + "}";
     }
 }

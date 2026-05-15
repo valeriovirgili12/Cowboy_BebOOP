@@ -11,13 +11,15 @@ public class Choice {
     private final String text;
     private final Requirement requirement; // null = sempre disponibile
     private final Outcome outcome;
-    private final boolean isKeyChoice;    // true = scelta finale pesante
+    private final boolean isKeyChoice; // true = scelta finale pesante
+    private final int timeoutSeconds;
 
     private Choice(Builder builder) {
         this.text         = builder.text;
         this.requirement  = builder.requirement;
         this.outcome      = builder.outcome;
         this.isKeyChoice  = builder.isKeyChoice;
+        this.timeoutSeconds  = builder.timeoutSeconds;
     }
 
     public String getText() { return text; }
@@ -30,6 +32,9 @@ public class Choice {
 
     public boolean isKeyChoice() { return isKeyChoice; }
 
+    public boolean hasTimeout()      { return timeoutSeconds > 0; }
+
+    public int getTimeoutSeconds()   { return timeoutSeconds; }
     /**
      * Restituisce true se la scelta è disponibile nella sessione corrente.
      */
@@ -42,6 +47,7 @@ public class Choice {
     public static class Builder {
         private final String text;
         private final Outcome outcome;
+        public int timeoutSeconds;
         private Requirement requirement = null;
         private boolean isKeyChoice     = false;
 
@@ -59,6 +65,12 @@ public class Choice {
 
         public Builder keyChoice() {
             this.isKeyChoice = true;
+            return this;
+        }
+
+        public Builder timeout(int seconds) {
+            if (seconds <= 0) throw new IllegalArgumentException("Timeout must be positive");
+            this.timeoutSeconds = seconds;
             return this;
         }
 

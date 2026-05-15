@@ -5,6 +5,7 @@ import it.unicam.cs.mpgc.rpg126421.model.episode.Choice;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Outcome;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Scene;
+import it.unicam.cs.mpgc.rpg126421.model.market.Item;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.Optional;
 public class GameService {
 
     private final GameSession session;
-
+    private boolean gameOver = false;
     public GameService(GameSession session) {
         if (session == null) throw new IllegalArgumentException("Session cannot be null");
         this.session = session;
@@ -55,7 +56,9 @@ public class GameService {
         // Flag di mondo
         outcome.getFlagsToSet().forEach((key, value) ->
                 session.getWorldState().setFlag(key, value)
+
         );
+        if (outcome.causesGameOver()) { gameOver = true; }
     }
 
     // ── Scene ────────────────────────────────────────────────────────────────
@@ -115,6 +118,34 @@ public class GameService {
         return session.getCurrentEpisode()
                 .flatMap(Episode::getNextScene);
     }
+
+
+    /**
+     * Scala i costi fissi tra episodi (carburante, cibo).
+     * Se i woolong sono insufficienti, imposta game over.
+     */
+    public boolean applyFixedCosts(int amount) {
+        boolean paid = session.getFinance().spend(amount);
+        if (!paid) {
+            gameOver = true;
+        }
+        return paid;
+    }
+
+    /**
+     * Acquista un oggetto dal mercato nero.
+     * @return false se woolong insufficienti
+     */
+    public boolean buyItem(Item item) {
+        boolean paid = session.getFinance().spend(item.getCost());
+        if (paid) {
+            session.addItem(item);
+        }
+        return paid;
+    }
+
+    public boolean isGameOver() { return gameOver; }
+
 
     // ── Crew ─────────────────────────────────────────────────────────────────
 

@@ -10,7 +10,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
-
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 import java.util.List;
 
 /**
@@ -36,6 +38,28 @@ public class GameController {
         this.gameService = gameService;
         updateHUD();
         startNextEpisode();
+    }
+
+    private void startTimer(Choice choice, Scene scene, Button btn) {
+        int[] remaining = {choice.getTimeoutSeconds()};
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            remaining[0]--;
+            btn.setText(choice.getText() + " [" + remaining[0] + "s]");
+            if (remaining[0] <= 0) {
+                onChoiceSelected(scene, choice);
+            }
+        }));
+        timeline.setCycleCount(choice.getTimeoutSeconds());
+        timeline.play();
+    }
+
+    private void showGameOver(String reason) {
+        narrativeArea.setText("GAME OVER\n\n" + reason);
+        choicesBox.getChildren().clear();
+        Button restartBtn = new Button("RICOMINCIA");
+        restartBtn.setOnAction(e -> SceneManager.switchTo(AppScene.MAIN_MENU));
+        choicesBox.getChildren().add(restartBtn);
     }
 
     private void updateHUD() {
@@ -72,6 +96,9 @@ public class GameController {
 
             if (available.contains(choice)) {
                 btn.setOnAction(e -> onChoiceSelected(scene, choice));
+                if (choice.hasTimeout()) {
+                    startTimer(choice, scene, btn);
+                }
             } else {
                 btn.setDisable(true);
                 // mostra hint del requisito non soddisfatto
@@ -89,6 +116,10 @@ public class GameController {
         choicesBox.getChildren().clear();
         updateHUD();
 
+        if (gameService.isGameOver()) {
+            showGameOver(choice.getOutcome().getNarrativeText());
+            return;
+        }
         // bottone per proseguire
         Button nextBtn = new Button("Continua →");
         nextBtn.setOnAction(e -> advance());

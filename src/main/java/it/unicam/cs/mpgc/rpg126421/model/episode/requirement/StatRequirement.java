@@ -21,9 +21,9 @@ public class StatRequirement implements Requirement {
     public boolean isMet(GameSession session) {
         int total = session.getCrew().stream()
                 .mapToInt(m -> switch (stat) {
-                    case STRENGTH  -> m.getCharacterClass().getStrength();
-                    case TECH      -> m.getCharacterClass().getTech();
-                    case RESILIENCE-> m.getCharacterClass().getResilience();
+                    case STRENGTH  -> m.getCharacterRole().getStrength();
+                    case TECH      -> m.getCharacterRole().getTech();
+                    case RESILIENCE-> m.getCharacterRole().getResilience();
                 })
                 .sum();
         return total >= threshold;

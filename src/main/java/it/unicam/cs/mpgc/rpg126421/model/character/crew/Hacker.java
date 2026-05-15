@@ -1,6 +1,7 @@
 package it.unicam.cs.mpgc.rpg126421.model.character.crew;
 
-import it.unicam.cs.mpgc.rpg126421.model.shared.CharacterClass;
+import it.unicam.cs.mpgc.rpg126421.model.shared.CaptainClass;
+import it.unicam.cs.mpgc.rpg126421.model.shared.CrewClass;
 
 /**
  * Membro della crew specializzato in tecnologia e infiltrazione digitale.
@@ -9,7 +10,7 @@ import it.unicam.cs.mpgc.rpg126421.model.shared.CharacterClass;
 public class Hacker extends CrewMember {
 
     public Hacker(String name) {
-        super(name, CharacterClass.HACKER);
+        super(name, CrewClass.HACKER);
     }
 
     /**
@@ -18,7 +19,7 @@ public class Hacker extends CrewMember {
      */
     @Override
     public String contributeToMission() {
-        int bonus = getCharacterClass().getTech();
+        int bonus = getCharacterRole().getTech();
         return getName() + " neutralizza i sistemi di sicurezza [TECH: " + bonus + "]";
     }
 }

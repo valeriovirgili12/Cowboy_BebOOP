@@ -1,7 +1,8 @@
 package it.unicam.cs.mpgc.rpg126421.model.character.crew;
 
 import it.unicam.cs.mpgc.rpg126421.model.character.Character;
-import it.unicam.cs.mpgc.rpg126421.model.shared.CharacterClass;
+import it.unicam.cs.mpgc.rpg126421.model.shared.CaptainClass;
+import it.unicam.cs.mpgc.rpg126421.model.shared.CrewClass;
 
 /**
  * Classe astratta per tutti i membri reclutabili della crew.
@@ -16,12 +17,15 @@ public abstract class CrewMember extends Character {
 
     private int trust;
 
-    protected CrewMember(String name, CharacterClass characterClass) {
-        super(name, characterClass);
+    protected CrewMember(String name, CrewClass crewClass) {
+        super(name, crewClass);
         this.trust = STARTING_TRUST;
     }
 
     public int getTrust() { return trust; }
+
+    // getter specifico
+    public CrewClass getCrewClass() { return (CrewClass) getCharacterRole(); }
 
     public void changeTrust(int delta) {
         this.trust = Math.clamp(this.trust + delta, MIN_TRUST, MAX_TRUST);
@@ -36,7 +40,7 @@ public abstract class CrewMember extends Character {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                "{name='" + getName() + "', class=" + getCharacterClass() +
+                "{name='" + getName() + "', class=" + getCharacterRole() +
                 ", trust=" + trust + "}";
     }
 }

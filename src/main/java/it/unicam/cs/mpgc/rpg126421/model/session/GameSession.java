@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg126421.model.session;
 import it.unicam.cs.mpgc.rpg126421.model.character.Captain;
 import it.unicam.cs.mpgc.rpg126421.model.character.crew.CrewMember;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
+import it.unicam.cs.mpgc.rpg126421.model.market.Item;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +21,10 @@ public class GameSession {
     private final Finance finance;
     private final WorldState worldState;
     private final Set<CrewMember> crew;
+    private final List<Item> inventory = new ArrayList<>();
     private final List<Episode> episodes;
+//    private final Marcus marcus;
+
 
     public GameSession(Captain captain) {
         if (captain == null) throw new IllegalArgumentException("Captain cannot be null");
@@ -31,20 +35,13 @@ public class GameSession {
         this.episodes   = new ArrayList<>();
     }
 
-    // ── Captain ──────────────────────────────────────────────────────────────
-
     public Captain getCaptain() { return captain; }
-
-    // ── Finance ──────────────────────────────────────────────────────────────
 
     public Finance getFinance() { return finance; }
 
-    // ── WorldState ───────────────────────────────────────────────────────────
-
     public WorldState getWorldState() { return worldState; }
 
-    // ── Crew ─────────────────────────────────────────────────────────────────
-
+    //public Marcus getMarcus() { return marcus; }
     /**
      * Aggiunge un membro alla crew. HashSet garantisce no duplicati.
      * @return false se il membro era già presente
@@ -70,8 +67,6 @@ public class GameSession {
         return crew.contains(member);
     }
 
-    // ── Episodes ─────────────────────────────────────────────────────────────
-
     public void addEpisode(Episode episode) {
         if (episode == null) throw new IllegalArgumentException("Episode cannot be null");
         episodes.add(episode);
@@ -81,6 +76,7 @@ public class GameSession {
         return Collections.unmodifiableList(episodes);
     }
 
+
     /**
      * Restituisce il primo episodio non ancora completato.
      */
@@ -88,6 +84,19 @@ public class GameSession {
         return episodes.stream()
                 .filter(e -> !e.isCompleted())
                 .findFirst();
+    }
+
+    public void addItem(Item item) {
+        if (item == null) throw new IllegalArgumentException("Item cannot be null");
+        inventory.add(item);
+    }
+
+    public boolean hasItem(Item item) {
+        return inventory.contains(item);
+    }
+
+    public List<Item> getInventory() {
+        return Collections.unmodifiableList(inventory);
     }
 
     @Override

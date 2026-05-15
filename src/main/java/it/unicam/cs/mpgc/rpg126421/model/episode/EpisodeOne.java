@@ -2,7 +2,7 @@ package it.unicam.cs.mpgc.rpg126421.model.episode;
 
 import it.unicam.cs.mpgc.rpg126421.model.episode.requirement.CrewClassRequirement;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
-import it.unicam.cs.mpgc.rpg126421.model.shared.CharacterClass;
+import it.unicam.cs.mpgc.rpg126421.model.shared.CaptainClass;
 
 import java.util.List;
 
@@ -80,7 +80,7 @@ public class EpisodeOne extends Episode {
                         .narrative("Con i sistemi in tuo controllo, gestisci tutto " +
                                 "senza lasciare tracce. Lavoro pulito.")
                         .build()
-        ).requires(new CrewClassRequirement(CharacterClass.HACKER))
+        ).requires(new CrewClassRequirement(CaptainClass.HACKER))
                 .keyChoice()
                 .build();
 

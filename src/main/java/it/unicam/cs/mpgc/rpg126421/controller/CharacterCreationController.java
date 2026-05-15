@@ -3,7 +3,7 @@ package it.unicam.cs.mpgc.rpg126421.controller;
 import it.unicam.cs.mpgc.rpg126421.model.character.Captain;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
-import it.unicam.cs.mpgc.rpg126421.model.shared.CharacterClass;
+import it.unicam.cs.mpgc.rpg126421.model.shared.CaptainClass;
 import it.unicam.cs.mpgc.rpg126421.repository.EpisodeRepositoryImpl;
 import it.unicam.cs.mpgc.rpg126421.service.GameService;
 import it.unicam.cs.mpgc.rpg126421.util.AppScene;
@@ -22,14 +22,14 @@ import java.util.List;
 public class CharacterCreationController {
 
     @FXML private TextField nameField;
-    @FXML private ChoiceBox<CharacterClass> classChoiceBox;
+    @FXML private ChoiceBox<CaptainClass> classChoiceBox;
     @FXML private Label errorLabel;
     @FXML private Label perkLabel;
 
     @FXML
     public void initialize() {
-        classChoiceBox.getItems().addAll(CharacterClass.values());
-        classChoiceBox.setValue(CharacterClass.BOUNTY_HUNTER);
+        classChoiceBox.getItems().addAll(CaptainClass.values());
+        classChoiceBox.setValue(CaptainClass.BOUNTY_HUNTER);
         updatePerkLabel();
 
         // aggiorna il perk quando cambia la classe
@@ -37,7 +37,7 @@ public class CharacterCreationController {
     }
 
     private void updatePerkLabel() {
-        CharacterClass selected = classChoiceBox.getValue();
+        CaptainClass selected = classChoiceBox.getValue();
         if (selected != null) {
             perkLabel.setText("Perk: " + selected.getPerk());
         }
@@ -52,7 +52,7 @@ public class CharacterCreationController {
             return;
         }
 
-        CharacterClass characterClass = classChoiceBox.getValue();
+        CaptainClass characterClass = classChoiceBox.getValue();
         Captain captain = new Captain(name, characterClass);
         GameSession session = new GameSession(captain);
 
