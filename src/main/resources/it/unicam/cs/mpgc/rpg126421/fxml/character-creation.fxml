@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="it.unicam.cs.mpgc.rpg126421.controller.CharacterCreationController"
+      alignment="CENTER" spacing="16"
+      style="-fx-background-color: #0a0a0a; -fx-padding: 60;">
+
+    <Label text="CREA IL TUO COWBOY"
+           style="-fx-font-size: 28px; -fx-font-weight: bold;
+                  -fx-text-fill: #f0c040; -fx-font-family: 'Courier New';"/>
+
+    <VBox spacing="8" maxWidth="400">
+        <Label text="Nome"
+               style="-fx-text-fill: #aaaaaa; -fx-font-family: 'Courier New';"/>
+        <TextField fx:id="nameField" promptText="Il tuo nome..."
+                   style="-fx-background-color: #1a1a1a; -fx-text-fill: #ffffff;
+                          -fx-font-family: 'Courier New'; -fx-border-color: #444444;
+                          -fx-border-width: 1; -fx-padding: 8;"/>
+    </VBox>
+
+    <VBox spacing="8" maxWidth="400">
+        <Label text="Classe"
+               style="-fx-text-fill: #aaaaaa; -fx-font-family: 'Courier New';"/>
+        <ChoiceBox fx:id="classChoiceBox" maxWidth="400"
+                   style="-fx-background-color: #1a1a1a; -fx-font-family: 'Courier New';"/>
+        <Label fx:id="perkLabel"
+               style="-fx-text-fill: #f0c040; -fx-font-family: 'Courier New';
+                      -fx-font-size: 12px;" wrapText="true" maxWidth="400"/>
+    </VBox>
+
+    <Label fx:id="errorLabel" text=""
+           style="-fx-text-fill: #ff4444; -fx-font-family: 'Courier New';
+                  -fx-font-size: 12px;"/>
+
+    <HBox spacing="12" alignment="CENTER">
+        <Button text="← INDIETRO" onAction="#onBack"
+                style="-fx-background-color: transparent; -fx-text-fill: #888888;
+                       -fx-font-family: 'Courier New'; -fx-border-color: #888888;
+                       -fx-border-width: 1; -fx-padding: 10 24; -fx-cursor: hand;"/>
+        <Button text="INIZIA" onAction="#onStartGame"
+                style="-fx-background-color: #f0c040; -fx-text-fill: #0a0a0a;
+                       -fx-font-family: 'Courier New'; -fx-font-weight: bold;
+                       -fx-padding: 10 24; -fx-cursor: hand;"/>
+    </HBox>
+</VBox>

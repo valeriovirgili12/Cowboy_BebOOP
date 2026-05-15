@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="it.unicam.cs.mpgc.rpg126421.controller.MainMenuController"
+      alignment="CENTER" spacing="20"
+      style="-fx-background-color: #0a0a0a; -fx-padding: 40;">
+
+    <Label fx:id="titleLabel"
+           style="-fx-font-size: 48px; -fx-font-weight: bold;
+                  -fx-text-fill: #f0c040; -fx-font-family: 'Courier New';"/>
+
+    <Label text="3, 2, 1... Let's Jam"
+           style="-fx-font-size: 16px; -fx-text-fill: #888888;
+                  -fx-font-family: 'Courier New';"/>
+
+    <VBox spacing="12" alignment="CENTER" style="-fx-padding: 40 0 0 0;">
+        <Button fx:id="newGameButton" text="NUOVA PARTITA"
+                onAction="#onNewGame"
+                style="-fx-background-color: #f0c040; -fx-text-fill: #0a0a0a;
+                       -fx-font-family: 'Courier New'; -fx-font-weight: bold;
+                       -fx-font-size: 14px; -fx-padding: 12 40;
+                       -fx-cursor: hand;"/>
+        <Button fx:id="quitButton" text="ESCI"
+                onAction="#onQuit"
+                style="-fx-background-color: transparent; -fx-text-fill: #888888;
+                       -fx-font-family: 'Courier New'; -fx-font-size: 14px;
+                       -fx-border-color: #888888; -fx-border-width: 1;
+                       -fx-padding: 12 40; -fx-cursor: hand;"/>
+    </VBox>
+</VBox>

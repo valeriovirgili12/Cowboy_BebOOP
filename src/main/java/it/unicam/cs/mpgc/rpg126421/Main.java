@@ -1,11 +1,12 @@
 package it.unicam.cs.mpgc.rpg126421;
 
+import it.unicam.cs.mpgc.rpg126421.util.AppScene;
+import it.unicam.cs.mpgc.rpg126421.util.SceneManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
  * Entry point del gioco Cowboy BebOOP.
- * Avvia la finestra JavaFX principale.
  */
 public class Main extends Application {
 
@@ -14,7 +15,10 @@ public class Main extends Application {
         primaryStage.setTitle("Cowboy BebOOP — 3, 2, 1, Let's Jam");
         primaryStage.setWidth(1024);
         primaryStage.setHeight(768);
-        primaryStage.show();
+        primaryStage.setResizable(false);
+
+        SceneManager.init(primaryStage);
+        SceneManager.switchTo(AppScene.MAIN_MENU);
     }
 
     public static void main(String[] args) {
