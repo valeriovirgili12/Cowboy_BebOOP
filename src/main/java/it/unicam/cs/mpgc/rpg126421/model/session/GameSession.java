@@ -1,8 +1,10 @@
 package it.unicam.cs.mpgc.rpg126421.model.session;
 
 import it.unicam.cs.mpgc.rpg126421.model.character.Captain;
+import it.unicam.cs.mpgc.rpg126421.model.character.companion.Marcus;
 import it.unicam.cs.mpgc.rpg126421.model.character.crew.CrewMember;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
+import it.unicam.cs.mpgc.rpg126421.model.market.BlackMarket;
 import it.unicam.cs.mpgc.rpg126421.model.market.Item;
 
 import java.util.ArrayList;
@@ -18,21 +20,23 @@ import java.util.Set;
 public class GameSession {
 
     private final Captain captain;
+    private final Marcus marcus;
     private final Finance finance;
     private final WorldState worldState;
     private final Set<CrewMember> crew;
-    private final List<Item> inventory = new ArrayList<>();
+    private final List<Item> inventory;
     private final List<Episode> episodes;
-//    private final Marcus marcus;
 
 
     public GameSession(Captain captain) {
         if (captain == null) throw new IllegalArgumentException("Captain cannot be null");
         this.captain    = captain;
+        this.marcus     = new Marcus();
         this.finance    = new Finance();
         this.worldState = new WorldState();
         this.crew       = new HashSet<>();
         this.episodes   = new ArrayList<>();
+        this.inventory  = new ArrayList<>();
     }
 
     public Captain getCaptain() { return captain; }
@@ -90,6 +94,7 @@ public class GameSession {
         if (item == null) throw new IllegalArgumentException("Item cannot be null");
         inventory.add(item);
     }
+    public Marcus getMarcus() { return marcus; }
 
     public boolean hasItem(Item item) {
         return inventory.contains(item);

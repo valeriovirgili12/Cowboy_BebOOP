@@ -1,12 +1,14 @@
 package it.unicam.cs.mpgc.rpg126421.service;
 
 import it.unicam.cs.mpgc.rpg126421.model.character.crew.CrewMember;
+import it.unicam.cs.mpgc.rpg126421.model.character.crew.Nyx;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Choice;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Outcome;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Scene;
 import it.unicam.cs.mpgc.rpg126421.model.market.Item;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
+import it.unicam.cs.mpgc.rpg126421.model.shared.CrewClass;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +54,12 @@ public class GameService {
                         .findFirst()
                         .ifPresent(m -> m.changeTrust(delta))
         );
+
+        // Trust Marcus — se l'outcome contiene "marcus" nei trustDeltas
+        outcome.getTrustDeltas().entrySet().stream()
+                .filter(e -> e.getKey().equalsIgnoreCase("marcus"))
+                .findFirst()
+                .ifPresent(e -> changeMarcusTrust(e.getValue()));
 
         // Flag di mondo
         outcome.getFlagsToSet().forEach((key, value) ->
@@ -156,6 +164,41 @@ public class GameService {
     public boolean recruitCrew(CrewMember member) {
         return session.recruitCrew(member);
     }
+
+    /**
+     * Recluta Nyx con la classe complementare al capitano.
+     */
+    public void recruitNyx() {
+        CrewClass nyxClass = switch (session.getCaptain().getCaptainClass()) {
+            case GUNSLINGER  -> CrewClass.HACKER;
+            case HACKER      -> CrewClass.GUNSLINGER;
+            case BOUNTY_HUNTER, MECHANIC -> CrewClass.HACKER; // default complementare
+        };
+        Nyx nyx = new Nyx(nyxClass);
+        session.recruitCrew(nyx);
+        session.getWorldState().setFlag("recruitedNyx", "true");
+    }
+
+    /**
+     * Restituisce Nyx se presente nella crew, altrimenti empty.
+     */
+    public java.util.Optional<Nyx> getNyx() {
+        return session.getCrew().stream()
+                .filter(m -> m instanceof Nyx)
+                .map(m -> (Nyx) m)
+                .findFirst();
+    }
+
+    /**
+     * Modifica la fiducia di Marcus e imposta il flag corrispondente.
+     */
+    public void changeMarcusTrust(int delta) {
+        session.getMarcus().changeTrust(delta);
+        String state = session.getMarcus().isTrustHigh() ? "high" : "low";
+        session.getWorldState().setFlag("trustMarcusHigh",
+                String.valueOf(session.getMarcus().isTrustHigh()));
+    }
+
 
     public GameSession getSession() { return session; }
 }
