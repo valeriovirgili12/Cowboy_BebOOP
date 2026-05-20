@@ -26,6 +26,7 @@ public class GameSession {
     private final Set<CrewMember> crew;
     private final List<Item> inventory;
     private final List<Episode> episodes;
+    private final NarrativeLog narrativeLog = new NarrativeLog();
 
 
     public GameSession(Captain captain) {
@@ -103,6 +104,8 @@ public class GameSession {
     public List<Item> getInventory() {
         return Collections.unmodifiableList(inventory);
     }
+
+    public NarrativeLog getNarrativeLog() { return narrativeLog; }
 
     @Override
     public String toString() {

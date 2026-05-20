@@ -13,6 +13,7 @@ public class Choice {
     private final Outcome outcome;
     private final boolean isKeyChoice; // true = scelta finale pesante
     private final int timeoutSeconds;
+    private final String logEntry;
 
     private Choice(Builder builder) {
         this.text         = builder.text;
@@ -20,6 +21,7 @@ public class Choice {
         this.outcome      = builder.outcome;
         this.isKeyChoice  = builder.isKeyChoice;
         this.timeoutSeconds  = builder.timeoutSeconds;
+        this.logEntry        = builder.logEntry;
     }
 
     public String getText() { return text; }
@@ -31,6 +33,8 @@ public class Choice {
     public Outcome getOutcome() { return outcome; }
 
     public boolean isKeyChoice() { return isKeyChoice; }
+
+    public String getLogEntry() { return logEntry; }
 
     public boolean hasTimeout()      { return timeoutSeconds > 0; }
 
@@ -50,12 +54,19 @@ public class Choice {
         public int timeoutSeconds;
         private Requirement requirement = null;
         private boolean isKeyChoice     = false;
+        private String logEntry = "";
+
 
         public Builder(String text, Outcome outcome) {
             if (text == null || text.isBlank())
                 throw new IllegalArgumentException("Choice text cannot be blank");
             this.text    = text;
             this.outcome = outcome;
+        }
+
+        public Builder logEntry(String text) {
+            this.logEntry = text;
+            return this;
         }
 
         public Builder requires(Requirement requirement) {
@@ -73,6 +84,7 @@ public class Choice {
             this.timeoutSeconds = seconds;
             return this;
         }
+
 
         public Choice build() { return new Choice(this); }
     }

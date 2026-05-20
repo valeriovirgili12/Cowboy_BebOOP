@@ -30,6 +30,7 @@ public class GameController {
     @FXML private VBox choicesBox;
 
     private GameService gameService;
+    private int currentEpisodeIndex = 0;
 
     /**
      * Chiamato da CharacterCreationController dopo il caricamento dell'FXML.
@@ -55,11 +56,9 @@ public class GameController {
     }
 
     private void showGameOver(String reason) {
-        narrativeArea.setText("GAME OVER\n\n" + reason);
-        choicesBox.getChildren().clear();
-        Button restartBtn = new Button("RICOMINCIA");
-        restartBtn.setOnAction(e -> SceneManager.switchTo(AppScene.MAIN_MENU));
-        choicesBox.getChildren().add(restartBtn);
+        GameOverController controller =
+                SceneManager.switchToAndGetController(AppScene.GAME_OVER);
+        controller.initGameOver(reason, gameService.getSession());
     }
 
     private void updateHUD() {
@@ -70,8 +69,16 @@ public class GameController {
     }
 
     private void startNextEpisode() {
+        if (currentEpisodeIndex == 1) {
+            // tra ep1 e ep2 — mercato nero
+            MarketController marketController =
+                    SceneManager.switchToAndGetController(AppScene.MARKET);
+            marketController.initMarket(gameService);
+            return;
+        }
         gameService.startNextEpisode().ifPresentOrElse(
                 episode -> {
+                    currentEpisodeIndex++;
                     episodeTitleLabel.setText(episode.getTitle());
                     showCurrentScene();
                 },
@@ -115,7 +122,16 @@ public class GameController {
         narrativeArea.setText(choice.getOutcome().getNarrativeText());
         choicesBox.getChildren().clear();
         updateHUD();
-
+        // reazione Marcus se la scelta ha un flag
+        String flag = choice.getOutcome().getFlagsToSet().entrySet().stream()
+                .map(e -> e.getKey() + "_" + e.getValue())
+                .findFirst().orElse("");
+        String marcusReaction = gameService.getSession().getMarcus().reactToChoice(flag);
+        if (!marcusReaction.isBlank()) {
+            narrativeArea.setText(
+                    choice.getOutcome().getNarrativeText() + "\n\nMarcus: " + marcusReaction
+            );
+        }
         if (gameService.isGameOver()) {
             showGameOver(choice.getOutcome().getNarrativeText());
             return;

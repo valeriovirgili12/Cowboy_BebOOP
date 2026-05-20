@@ -86,6 +86,8 @@ public class GameService {
             throw new IllegalStateException("Choice not available: " + choice.getText());
         applyChoice(choice);
         scene.complete();
+        session.getNarrativeLog().add(choice.getLogEntry());
+
     }
 
     // ── Episodi ──────────────────────────────────────────────────────────────

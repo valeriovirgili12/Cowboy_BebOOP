@@ -9,8 +9,9 @@ public enum AppScene {
     MAIN_MENU        ("/it/unicam/cs/mpgc/rpg126421/fxml/main-menu.fxml"),
     CHARACTER_CREATION("/it/unicam/cs/mpgc/rpg126421/fxml/character-creation.fxml"),
     GAME             ("/it/unicam/cs/mpgc/rpg126421/fxml/game.fxml"),
-    ENDING           ("/it/unicam/cs/mpgc/rpg126421/fxml/ending.fxml");
-
+    ENDING           ("/it/unicam/cs/mpgc/rpg126421/fxml/ending.fxml"),
+    MARKET           ("/it/unicam/cs/mpgc/rpg126421/fxml/market.fxml"),
+    GAME_OVER        ("/it/unicam/cs/mpgc/rpg126421/fxml/game-over.fxml");
     private final String fxmlPath;
 
     AppScene(String fxmlPath) {

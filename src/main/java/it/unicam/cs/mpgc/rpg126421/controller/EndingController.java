@@ -19,31 +19,57 @@ public class EndingController {
     @FXML private Label finalWoolongLabel;
     @FXML private Label finalMoraleLabel;
     @FXML private Button restartButton;
+    @FXML private TextArea logArea;
+
 
     /**
      * Chiamato da GameController con la sessione completata.
      */
     public void initEnding(GameSession session) {
         String finale = session.getWorldState().getFlag("finale");
+        if (finale == null) finale = "unknown";
 
-        if ("honest".equals(finale)) {
-            endingTitleLabel.setText("See You, Space Cowboy...");
-            endingSummaryArea.setText(
-                    "Hai fatto le scelte difficili. La tua crew ti rispetta. " +
-                            "I woolong scarseggiano, ma sai chi sei.\n\n" +
-                            "Forse un giorno tornerai tra le stelle."
-            );
-        } else {
-            endingTitleLabel.setText("3, 2, 1 — Let's Jam.");
-            endingSummaryArea.setText(
-                    "Il frigo è pieno e la Bebop vola. " +
-                            "Hai lasciato qualcosa per strada, ma chi non lo fa?\n\n" +
-                            "Ci sono ancora taglie là fuori. Sempre."
-            );
+        switch (finale) {
+            case "honest" -> {
+                endingTitleLabel.setText("See You, Space Cowboy...");
+                endingSummaryArea.setText(
+                        "Hai trasmesso tutto. Il mondo sa.\n" +
+                                "La Helix Corporation è finita. Aaron Morrow è stato vendicato.\n\n" +
+                                "Marcus guarda fuori dal finestrino senza dire nulla.\n" +
+                                "Non ne ha bisogno."
+                );
+            }
+            case "delivered" -> {
+                endingTitleLabel.setText("Justice, More or Less.");
+                endingSummaryArea.setText(
+                        "Kessler è in custodia ISSP. Per quanto durerà?\n" +
+                                "Marcus sembra quasi in pace. Quasi.\n\n" +
+                                "La Blue Mantis riparte. C'è sempre un'altra taglia."
+                );
+            }
+            case "destroyed" -> {
+                endingTitleLabel.setText("Ashes and Static.");
+                endingSummaryArea.setText(
+                        "I server Helix sono cenere.\n" +
+                                "Nessuna prova, nessun processo. Ma il sistema è morto.\n\n" +
+                                "Nyx sparisce nella notte. Come sempre."
+                );
+            }
+            default -> {
+                endingTitleLabel.setText("3, 2, 1 — Let's Jam.");
+                endingSummaryArea.setText(
+                        "Hai accettato l'offerta. La Blue Mantis è piena di carburante.\n" +
+                                "Marcus non ti guarda più negli occhi.\n\n" +
+                                "Ma i woolong non mentono."
+                );
+            }
         }
 
         finalWoolongLabel.setText("Woolong finali: ₩ " + session.getFinance().getWoolong());
         finalMoraleLabel.setText("Morale finale: " + session.getCaptain().getMorale());
+
+        // mostra log narrativo
+        logArea.setText(session.getNarrativeLog().getSummary());
     }
 
     @FXML
