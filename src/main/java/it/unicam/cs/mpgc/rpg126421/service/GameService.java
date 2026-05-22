@@ -33,40 +33,33 @@ public class GameService {
      * Applica l'outcome di una scelta alla sessione corrente.
      * Aggiorna woolong, morale, trust dei crew member e flag di mondo.
      */
-    public void applyChoice(Choice choice) {
-        Outcome outcome = choice.getOutcome();
-
-        // Woolong
+    public void applyChoice(Choice choice, Outcome outcome) {
         int woolongDelta = outcome.getWoolongDelta();
         if (woolongDelta >= 0) {
-            session.getFinance().earn(woolongDelta);
+            if (woolongDelta > 0) session.getFinance().earn(woolongDelta);
         } else {
             session.getFinance().spend(-woolongDelta);
         }
-
-        // Morale capitano
         session.getCaptain().changeMorale(outcome.getMoraleDelta());
-
-        // Trust crew member
-        outcome.getTrustDeltas().forEach((memberName, delta) ->
+        outcome.getTrustDeltas().forEach((memberName, delta) -> {
+            if (memberName.equalsIgnoreCase("marcus")) {
+                changeMarcusTrust(delta);
+            } else {
                 session.getCrew().stream()
                         .filter(m -> m.getName().equals(memberName))
                         .findFirst()
-                        .ifPresent(m -> m.changeTrust(delta))
-        );
-
-        // Trust Marcus — se l'outcome contiene "marcus" nei trustDeltas
-        outcome.getTrustDeltas().entrySet().stream()
-                .filter(e -> e.getKey().equalsIgnoreCase("marcus"))
-                .findFirst()
-                .ifPresent(e -> changeMarcusTrust(e.getValue()));
-
-        // Flag di mondo
+                        .ifPresent(m -> m.changeTrust(delta));
+            }
+        });
         outcome.getFlagsToSet().forEach((key, value) ->
                 session.getWorldState().setFlag(key, value)
-
         );
-        if (outcome.causesGameOver()) { gameOver = true; }
+        if (outcome.causesGameOver()) gameOver = true;
+    }
+
+    // mantieni il vecchio per compatibilità
+    public void applyChoice(Choice choice) {
+        applyChoice(choice, choice.getOutcome());
     }
 
     // ── Scene ────────────────────────────────────────────────────────────────
@@ -82,12 +75,24 @@ public class GameService {
      * Applica una scelta e segna la scena come completata.
      */
     public void resolveScene(Scene scene, Choice choice) {
-        if (!choice.isAvailable(session))
-            throw new IllegalStateException("Choice not available: " + choice.getText());
-        applyChoice(choice);
+        Outcome outcome;
+
+        if (choice.willFail(session)) {
+            // scelta tentata senza requisiti — usa failure outcome
+            if (choice.getOutcome().hasFailureOutcome()) {
+                outcome = choice.getOutcome().getFailureOutcome();
+            } else {
+                outcome = choice.getOutcome(); // fallback
+            }
+            applyChoice(choice, outcome);
+            if (outcome.causesGameOver()) gameOver = true;
+        } else {
+            outcome = choice.getOutcome();
+            applyChoice(choice, outcome);
+        }
+
         scene.complete();
         session.getNarrativeLog().add(choice.getLogEntry());
-
     }
 
     // ── Episodi ──────────────────────────────────────────────────────────────

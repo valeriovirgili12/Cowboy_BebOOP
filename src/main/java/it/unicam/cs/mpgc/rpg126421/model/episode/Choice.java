@@ -14,6 +14,7 @@ public class Choice {
     private final boolean isKeyChoice; // true = scelta finale pesante
     private final int timeoutSeconds;
     private final String logEntry;
+    private final Requirement failCondition;
 
     private Choice(Builder builder) {
         this.text         = builder.text;
@@ -22,6 +23,7 @@ public class Choice {
         this.isKeyChoice  = builder.isKeyChoice;
         this.timeoutSeconds  = builder.timeoutSeconds;
         this.logEntry        = builder.logEntry;
+        this.failCondition = builder.failCondition;
     }
 
     public String getText() { return text; }
@@ -46,6 +48,14 @@ public class Choice {
         return requirement == null || requirement.isMet(session);
     }
 
+    /**
+     * Verifica se la scelta fallisce in base alle condizioni della sessione.
+     * La scelta è sempre visibile, ma può produrre un outcome negativo.
+     */
+    public boolean willFail(it.unicam.cs.mpgc.rpg126421.model.session.GameSession session) {
+        return failCondition != null && !failCondition.isMet(session);
+    }
+
     // ── Builder ──────────────────────────────────────────────────────────────
 
     public static class Builder {
@@ -55,6 +65,8 @@ public class Choice {
         private Requirement requirement = null;
         private boolean isKeyChoice     = false;
         private String logEntry = "";
+        private Requirement failCondition = null;
+
 
 
         public Builder(String text, Outcome outcome) {
@@ -84,7 +96,10 @@ public class Choice {
             this.timeoutSeconds = seconds;
             return this;
         }
-
+        public Builder failsIf(Requirement condition) {
+            this.failCondition = condition;
+            return this;
+        }
 
         public Choice build() { return new Choice(this); }
     }

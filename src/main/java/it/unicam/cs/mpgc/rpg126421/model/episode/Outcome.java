@@ -16,6 +16,7 @@ public class Outcome {
     private final Map<String, String> flagsToSet;
     private final String narrativeText;
     private final boolean causesGameOver;
+    private final Outcome failureOutcome;
 
     private Outcome(Builder builder) {
         this.woolongDelta  = builder.woolongDelta;
@@ -24,6 +25,8 @@ public class Outcome {
         this.flagsToSet    = Collections.unmodifiableMap(builder.flagsToSet);
         this.narrativeText = builder.narrativeText;
         this.causesGameOver  = builder.causesGameOver;
+        this.failureOutcome = builder.failureOutcome;
+
 
     }
 
@@ -33,7 +36,8 @@ public class Outcome {
     public Map<String, String> getFlagsToSet()  { return flagsToSet; }
     public String getNarrativeText()            { return narrativeText; }
     public boolean causesGameOver() { return causesGameOver; }
-
+    public boolean hasFailureOutcome()  { return failureOutcome != null; }
+    public Outcome getFailureOutcome()  { return failureOutcome; }
     // ── Builder ──────────────────────────────────────────────────────────────
 
     public static class Builder {
@@ -43,13 +47,18 @@ public class Outcome {
         private final Map<String, String>  flagsToSet  = new HashMap<>();
         private String narrativeText = "";
         private boolean causesGameOver = false;
+        private Outcome failureOutcome = null;
+
 
         public Builder woolong(int delta)               { this.woolongDelta = delta; return this; }
         public Builder morale(int delta)                { this.moraleDelta  = delta; return this; }
         public Builder trust(String memberName, int d)  { trustDeltas.put(memberName, d); return this; }
         public Builder flag(String key, String value)   { flagsToSet.put(key, value); return this; }
         public Builder narrative(String text)           { this.narrativeText = text; return this; }
-        public Builder gameOver()                       { this.causesGameOver = true; return this; }
+        public Builder gameOver()
+        { this.causesGameOver = true; return this; }
+        public Builder onFailure(Outcome failure)
+        {this.failureOutcome = failure; return this; }
         public Outcome build() { return new Outcome(this); }
     }
 }
