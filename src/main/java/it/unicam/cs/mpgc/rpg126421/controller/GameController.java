@@ -31,6 +31,8 @@ public class GameController {
 
     private GameService gameService;
     private int currentEpisodeIndex = 0;
+    private Timeline activeTimer = null;
+
 
     /**
      * Chiamato da CharacterCreationController dopo il caricamento dell'FXML.
@@ -44,15 +46,15 @@ public class GameController {
     private void startTimer(Choice choice, Scene scene, Button btn) {
         int[] remaining = {choice.getTimeoutSeconds()};
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+        activeTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             remaining[0]--;
             btn.setText(choice.getText() + " [" + remaining[0] + "s]");
             if (remaining[0] <= 0) {
                 onChoiceSelected(scene, choice);
             }
         }));
-        timeline.setCycleCount(choice.getTimeoutSeconds());
-        timeline.play();
+        activeTimer.setCycleCount(choice.getTimeoutSeconds());
+        activeTimer.play();
     }
 
     private void showGameOver(String reason) {
@@ -69,13 +71,14 @@ public class GameController {
     }
 
     private void startNextEpisode() {
+        // mercato nero tra episodio 1 e 2
         if (currentEpisodeIndex == 1) {
-            // tra ep1 e ep2 — mercato nero
             MarketController marketController =
                     SceneManager.switchToAndGetController(AppScene.MARKET);
             marketController.initMarket(gameService);
             return;
         }
+
         gameService.startNextEpisode().ifPresentOrElse(
                 episode -> {
                     currentEpisodeIndex++;
@@ -101,42 +104,65 @@ public class GameController {
             btn.setMaxWidth(Double.MAX_VALUE);
             btn.setWrapText(true);
 
-            if (available.contains(choice)) {
+            boolean isAvailable = available.contains(choice);
+            boolean willFail    = choice.willFail(gameService.getSession());
+
+            if (isAvailable || willFail) {
+                // visibile sempre — disponibile o fallibile
                 btn.setOnAction(e -> onChoiceSelected(scene, choice));
+                if (willFail) {
+                    // hint visivo che potrebbe andare male
+                    choice.getRequirement().ifPresent(r ->
+                            btn.setStyle("-fx-border-color: #ff4444; -fx-border-width: 1;")
+                    );
+                    btn.setText(choice.getText() + "\n[⚠ " +
+                            choice.getOutcome().getFlagsToSet().toString() + "]");
+                }
                 if (choice.hasTimeout()) {
                     startTimer(choice, scene, btn);
                 }
             } else {
                 btn.setDisable(true);
-                // mostra hint del requisito non soddisfatto
                 choice.getRequirement().ifPresent(r ->
                         btn.setText(choice.getText() + "\n[" + r.getHint() + "]")
                 );
             }
+
             choicesBox.getChildren().add(btn);
         }
     }
 
     private void onChoiceSelected(Scene scene, Choice choice) {
+        if (activeTimer != null) {
+            activeTimer.stop();
+            activeTimer = null;
+        }
+        boolean failed = choice.willFail(gameService.getSession());
         gameService.resolveScene(scene, choice);
-        narrativeArea.setText(choice.getOutcome().getNarrativeText());
-        choicesBox.getChildren().clear();
-        updateHUD();
-        // reazione Marcus se la scelta ha un flag
+
+        // testo narrativo in base a successo/fallimento
+        String narrativeText = failed && choice.getOutcome().hasFailureOutcome()
+                ? choice.getOutcome().getFailureOutcome().getNarrativeText()
+                : choice.getOutcome().getNarrativeText();
+
+        // reazione Marcus
         String flag = choice.getOutcome().getFlagsToSet().entrySet().stream()
                 .map(e -> e.getKey() + "_" + e.getValue())
                 .findFirst().orElse("");
         String marcusReaction = gameService.getSession().getMarcus().reactToChoice(flag);
-        if (!marcusReaction.isBlank()) {
-            narrativeArea.setText(
-                    choice.getOutcome().getNarrativeText() + "\n\nMarcus: " + marcusReaction
-            );
-        }
+
+        narrativeArea.setText(marcusReaction.isBlank()
+                ? narrativeText
+                : narrativeText + "\n\nMarcus: " + marcusReaction);
+
+        choicesBox.getChildren().clear();
+        updateHUD();
+
         if (gameService.isGameOver()) {
-            showGameOver(choice.getOutcome().getNarrativeText());
+            showGameOver(narrativeText);
             return;
         }
-        // bottone per proseguire
+
         Button nextBtn = new Button("Continua →");
         nextBtn.setOnAction(e -> advance());
         choicesBox.getChildren().add(nextBtn);
