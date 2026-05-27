@@ -2,27 +2,40 @@ package it.unicam.cs.mpgc.rpg126421.model.episode.requirement;
 
 import it.unicam.cs.mpgc.rpg126421.model.episode.Requirement;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
-import it.unicam.cs.mpgc.rpg126421.model.shared.CaptainClass;
+import it.unicam.cs.mpgc.rpg126421.model.shared.CharacterRole;
 
 /**
- * Soddisfatta se nella crew c'è almeno un membro della classe richiesta.
+ * Soddisfatta se il capitano o un membro della crew
+ * ha il displayName della classe richiesta.
+ * Funziona sia con CaptainClass che con CrewClass.
  */
 public class CrewClassRequirement implements Requirement {
 
-    private final CaptainClass required;
+    private final String requiredClassName;
 
-    public CrewClassRequirement(CaptainClass required) {
-        this.required = required;
+    public CrewClassRequirement(CharacterRole required) {
+        this.requiredClassName = required.getDisplayName();
     }
 
     @Override
     public boolean isMet(GameSession session) {
-        return session.getCrew().stream()
-                .anyMatch(m -> m.getCharacterRole() == required);
+        // controlla il capitano
+        boolean captainMatches = session.getCaptain()
+                .getCharacterRole()
+                .getDisplayName()
+                .equals(requiredClassName);
+
+        // controlla la crew
+        boolean crewMatches = session.getCrew().stream()
+                .anyMatch(m -> m.getCharacterRole()
+                        .getDisplayName()
+                        .equals(requiredClassName));
+
+        return captainMatches || crewMatches;
     }
 
     @Override
     public String getHint() {
-        return "Serve un " + required.getDisplayName() + " nella crew";
+        return "Richiede un " + requiredClassName + " nel team";
     }
 }

@@ -31,6 +31,11 @@ public class CrewService {
         };
         Nyx nyx = new Nyx(nyxClass);
         session.recruitCrew(nyx);
+        // se Nyx è stata intimidita, parte con lealtà ridotta
+        if ("true".equals(session.getWorldState().getFlag("ep2_intimidated_nyx"))) {
+            nyx.setLoyal(false);
+            session.getWorldState().setFlag("nyxLoyal", "false");
+        }
     }
 
     /**
