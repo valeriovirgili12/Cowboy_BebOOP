@@ -1,42 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="it.unicam.cs.mpgc.rpg126421.controller.EndingController"
-      alignment="CENTER" spacing="20"
-      style="-fx-background-color: #0a0a0a; -fx-padding: 60;">
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="it.unicam.cs.mpgc.rpg126421.controller.EndingController"
+           prefWidth="1024" prefHeight="768"
+           styleClass="root-pane">
 
-    <Label fx:id="endingTitleLabel"
-           style="-fx-font-size: 32px; -fx-font-weight: bold;
-                  -fx-text-fill: #f0c040; -fx-font-family: 'Courier New';"/>
+    <stylesheets>
+        <URL value="@/it/unicam/cs/mpgc/rpg126421/css/bebop.css"/>
+    </stylesheets>
 
-    <TextArea fx:id="endingSummaryArea" editable="false" wrapText="true"
-              prefHeight="200" maxWidth="600"
-              style="-fx-background-color: #111111; -fx-text-fill: #dddddd;
-                     -fx-font-family: 'Courier New'; -fx-font-size: 13px;
-                     -fx-border-color: #333333; -fx-border-width: 1;"/>
+    <Pane style="-fx-background-color: #020402;"/>
+    <Pane styleClass="scanline-overlay" mouseTransparent="true"/>
 
-    <HBox spacing="24" alignment="CENTER">
-        <Label fx:id="finalWoolongLabel"
-               style="-fx-text-fill: #f0c040; -fx-font-family: 'Courier New';
-                      -fx-font-size: 14px;"/>
-        <Label fx:id="finalMoraleLabel"
-               style="-fx-text-fill: #88cc88; -fx-font-family: 'Courier New';
-                      -fx-font-size: 14px;"/>
-    </HBox>
+    <VBox spacing="16" style="-fx-padding: 40;">
 
-    <Label text="— REGISTRO SCELTE —"
-           style="-fx-text-fill: #888888; -fx-font-family: 'Courier New';
-              -fx-font-size: 11px;"/>
-    <TextArea fx:id="logArea" editable="false" wrapText="true"
-              prefHeight="150" maxWidth="600"
-              style="-fx-background-color: #111111; -fx-text-fill: #aaaaaa;
-                 -fx-font-family: 'Courier New'; -fx-font-size: 11px;
-                 -fx-border-color: #333333;"/>
+        <!-- Titolo -->
+        <Label fx:id="endingTitleLabel"
+               styleClass="label-title"
+               text="MISSIONE COMPLETATA"/>
 
-    <Button fx:id="restartButton" text="GIOCA ANCORA" onAction="#onRestart"
-            style="-fx-background-color: #f0c040; -fx-text-fill: #0a0a0a;
-                   -fx-font-family: 'Courier New'; -fx-font-weight: bold;
-                   -fx-padding: 12 40; -fx-cursor: hand;"/>
-</VBox>
+        <!-- Stats HUD -->
+        <HBox spacing="40" alignment="CENTER_LEFT"
+              styleClass="hud-bar">
+            <Label fx:id="finalWoolongLabel"
+                   styleClass="label-woolong" text="WOOLONG: 0"/>
+            <Label fx:id="finalMoraleLabel"
+                   styleClass="label-hud" text="MORALE: 0"/>
+        </HBox>
+
+        <!-- Due colonne -->
+        <HBox spacing="20" VBox.vgrow="ALWAYS">
+
+            <!-- Sinistra — narrazione finale -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <Label text="— RAPPORTO FINALE —"
+                       styleClass="label-subtitle"/>
+                <TextArea fx:id="endingSummaryArea"
+                          editable="false" wrapText="true"
+                          prefHeight="440"
+                          styleClass="narrative-area"
+                          style="-fx-border-color: #004d14;
+                                 -fx-border-width: 1;"
+                          VBox.vgrow="ALWAYS"/>
+            </VBox>
+
+            <!-- Destra — registro scelte -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <Label text="— REGISTRO SCELTE —"
+                       styleClass="label-subtitle"/>
+                <TextArea fx:id="logArea"
+                          editable="false" wrapText="true"
+                          prefHeight="440"
+                          styleClass="narrative-area"
+                          style="-fx-border-color: #004d14;
+                                 -fx-border-width: 1;"
+                          VBox.vgrow="ALWAYS"/>
+            </VBox>
+        </HBox>
+
+        <!-- Bottoni -->
+        <HBox alignment="CENTER" spacing="20">
+            <Button text="[ GIOCA ANCORA ]"
+                    onAction="#onRestart"
+                    styleClass="btn-primary"/>
+        </HBox>
+
+        <Label text="See you space cowboy..."
+               styleClass="label-subtitle"
+               style="-fx-padding: 4 0 0 0;"/>
+    </VBox>
+</StackPane>

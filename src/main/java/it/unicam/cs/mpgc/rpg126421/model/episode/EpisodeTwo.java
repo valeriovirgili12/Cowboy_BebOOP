@@ -237,7 +237,7 @@ public class EpisodeTwo extends Episode {
                         )
                         .build()
         )
-                .requires(new FlagRequirement("ep2_protected_nyx", "true"))
+                .failsIf(new FlagRequirement("ep2_protected_nyx", "true"))
                 .logEntry("Nyx sulla nave — per debito, non per scelta.")
                 .keyChoice()
                 .build();

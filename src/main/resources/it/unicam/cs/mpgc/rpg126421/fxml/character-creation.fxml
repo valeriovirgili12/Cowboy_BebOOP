@@ -1,47 +1,176 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.paint.Color?>
+<?import java.net.URL?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="it.unicam.cs.mpgc.rpg126421.controller.CharacterCreationController"
-      alignment="CENTER" spacing="16"
-      style="-fx-background-color: #0a0a0a; -fx-padding: 60;">
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="it.unicam.cs.mpgc.rpg126421.controller.CharacterCreationController"
+           prefWidth="1024"
+           prefHeight="768"
+           styleClass="root-pane">
 
-    <Label text="CREA IL TUO COWBOY"
-           style="-fx-font-size: 28px; -fx-font-weight: bold;
-                  -fx-text-fill: #f0c040; -fx-font-family: 'Courier New';"/>
+    <stylesheets>
+        <URL value="@/it/unicam/cs/mpgc/rpg126421/css/bebop.css"/>
+    </stylesheets>
 
-    <VBox spacing="8" maxWidth="400">
-        <Label text="Nome"
-               style="-fx-text-fill: #aaaaaa; -fx-font-family: 'Courier New';"/>
-        <TextField fx:id="nameField" promptText="Il tuo nome..."
-                   style="-fx-background-color: #1a1a1a; -fx-text-fill: #ffffff;
-                          -fx-font-family: 'Courier New'; -fx-border-color: #444444;
-                          -fx-border-width: 1; -fx-padding: 8;"/>
-    </VBox>
+    <Pane style="-fx-background-color: #020402;"/>
 
-    <VBox spacing="8" maxWidth="400">
-        <Label text="Classe"
-               style="-fx-text-fill: #aaaaaa; -fx-font-family: 'Courier New';"/>
-        <ChoiceBox fx:id="classChoiceBox" maxWidth="400"
-                   style="-fx-background-color: #1a1a1a; -fx-font-family: 'Courier New';"/>
-        <Label fx:id="perkLabel"
-               style="-fx-text-fill: #f0c040; -fx-font-family: 'Courier New';
-                      -fx-font-size: 12px;" wrapText="true" maxWidth="400"/>
-    </VBox>
+    <Pane styleClass="scanline-overlay" mouseTransparent="true"/>
 
-    <Label fx:id="errorLabel" text=""
-           style="-fx-text-fill: #ff4444; -fx-font-family: 'Courier New';
+    <HBox alignment="CENTER"
+          spacing="80"
+          style="-fx-padding: 40;">
+
+        <VBox alignment="CENTER"
+              spacing="30"
+              prefWidth="450"
+              HBox.hgrow="ALWAYS">
+
+            <Label text="CREA IL TUO&#10;PERSONAGGIO"
+                   textAlignment="CENTER"
+                   style="-fx-text-fill: #00FF41; -fx-line-spacing: -5px;">
+                <font>
+                    <Font name="Impact" size="46.0" />
+                </font>
+                <effect>
+                    <DropShadow radius="15.0" spread="0.3">
+                        <color>
+                            <Color red="0.0" green="1.0" blue="0.2" opacity="0.6"/>
+                        </color>
+                    </DropShadow>
+                </effect>
+            </Label>
+
+            <VBox spacing="8"
+                  maxWidth="340"
+                  style="-fx-background-color: #021a02;
+             -fx-border-color: #004d14;
+             -fx-border-width: 1;
+             -fx-padding: 14;">
+
+                <Label text="&gt; FIELD MANUAL"
+                       style="-fx-text-fill: #00ff41; -fx-font-family: 'Courier New';
+                  -fx-font-weight: bold; -fx-font-size: 13px;"/>
+
+                <Label text="WOOLONG  Valuta di gioco. Guadagni con le taglie,
+perdi con le spese. Sotto di 2000: game over."
+                       wrapText="true" maxWidth="312"
+                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New';
                   -fx-font-size: 12px;"/>
 
-    <HBox spacing="12" alignment="CENTER">
-        <Button text="← INDIETRO" onAction="#onBack"
-                style="-fx-background-color: transparent; -fx-text-fill: #888888;
-                       -fx-font-family: 'Courier New'; -fx-border-color: #888888;
-                       -fx-border-width: 1; -fx-padding: 10 24; -fx-cursor: hand;"/>
-        <Button text="INIZIA" onAction="#onStartGame"
-                style="-fx-background-color: #f0c040; -fx-text-fill: #0a0a0a;
-                       -fx-font-family: 'Courier New'; -fx-font-weight: bold;
-                       -fx-padding: 10 24; -fx-cursor: hand;"/>
+                <Label text="MORALE  Scende con scelte ciniche, sale con
+quelle oneste. Influenza i dialoghi."
+                       wrapText="true" maxWidth="312"
+                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New';
+                  -fx-font-size: 12px;"/>
+
+                <Label text="MARCUS TRUST  La fiducia del tuo compagno.
+Non la dare per scontata"
+                       wrapText="true" maxWidth="312"
+                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New';
+                  -fx-font-size: 12px;"/>
+
+                <Label text="CARBURANTE  Tra episodi paghi 1000₩ di
+rifornimento e cibo. Pianifica le spese."
+                       wrapText="true" maxWidth="312"
+                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New';
+                  -fx-font-size: 12px;"/>
+
+                <Label text="SCELTE  Alcune hanno un timer. Alcune
+falliscono senza i requisiti giusti."
+                       wrapText="true" maxWidth="312"
+                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New';
+                  -fx-font-size: 12px;"/>
+            </VBox>
+
+            <Label text="★ ISSP WANTED NETWORK REGISTRATION ★"
+                   style="-fx-text-fill: #00FF41; -fx-font-weight: bold;">
+                <font>
+                    <Font name="Courier New" size="15.0" />
+                </font>
+                <effect>
+                    <DropShadow radius="5.0">
+                        <color>
+                            <Color red="0.0" green="1.0" blue="0.2" opacity="0.5"/>
+                        </color>
+                    </DropShadow>
+                </effect>
+            </Label>
+        </VBox>
+
+        <VBox spacing="40"
+              prefWidth="450"
+              alignment="CENTER_LEFT"
+              HBox.hgrow="ALWAYS">
+
+            <VBox spacing="12">
+                <Label text="&gt; NOME" style="-fx-text-fill: #00FF41;">
+                    <font>
+                        <Font name="Impact" size="20.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="nameField"
+                           promptText="Inserisci il nome..."
+                           styleClass="field-input"
+                           prefWidth="400"
+                           maxWidth="400"
+                           prefHeight="50"
+                           style="-fx-font-family: 'Courier New'; -fx-font-size: 16px;"/>
+            </VBox>
+
+            <VBox spacing="12">
+                <Label text="&gt; CLASSE" style="-fx-text-fill: #00FF41;">
+                    <font>
+                        <Font name="Impact" size="20.0" />
+                    </font>
+                </Label>
+
+                <ChoiceBox fx:id="classChoiceBox"
+                           prefWidth="400"
+                           maxWidth="400"
+                           prefHeight="50"
+                           style="-fx-font-family: 'Courier New'; -fx-font-size: 16px;"/>
+
+                <Label fx:id="perkLabel"
+                       wrapText="true"
+                       maxWidth="400"
+                       styleClass="label-subtitle"
+                       style="-fx-padding: 10 0 0 0; -fx-text-fill: #00FF41;">
+                    <font>
+                        <Font name="Courier New" size="15.0" />
+                    </font>
+                </Label>
+            </VBox>
+
+            <Label fx:id="errorLabel"
+                   styleClass="label-error"
+                   maxWidth="400"
+                   wrapText="true"
+                   style="-fx-text-fill: #FF3333; -fx-font-family: 'Courier New'; -fx-font-size: 14px;"/>
+
+            <HBox spacing="30"
+                  alignment="CENTER_LEFT"
+                  style="-fx-padding: 20 0 0 0;">
+
+                <Button text="[ INDIETRO ]"
+                        onAction="#onBack"
+                        styleClass="btn-secondary"
+                        prefWidth="185"
+                        prefHeight="55"
+                        style="-fx-font-family: 'Impact'; -fx-font-size: 18px;"/>
+
+                <Button text="[ INIZIA ]"
+                        onAction="#onStartGame"
+                        styleClass="btn-primary"
+                        prefWidth="185"
+                        prefHeight="55"
+                        style="-fx-font-family: 'Impact'; -fx-font-size: 18px;"/>
+            </HBox>
+        </VBox>
     </HBox>
-</VBox>
+</StackPane>

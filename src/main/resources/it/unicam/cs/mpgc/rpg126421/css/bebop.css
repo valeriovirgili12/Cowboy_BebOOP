@@ -1,0 +1,448 @@
+/* ═══════════════════════════════════════════════════════
+   COWBOY BEBOP — CRT TERMINAL UI
+   Minimal retro-futuristic style
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Palette ─────────────────────────────────────────── */
+
+.root {
+    -bg-black:      #020402;
+    -bg-panel:      #071107;
+
+    -green-main:    #00ff66;
+    -green-soft:    #00cc55;
+    -green-dim:     #0b5d2a;
+
+    -text-dark:     #021002;
+
+    -amber:         #ffb000;
+    -danger:        #ff4422;
+}
+
+/* ── Base Layout ─────────────────────────────────────── */
+
+.root-pane {
+    -fx-background-color: -bg-black;
+}
+
+/* ── Title ───────────────────────────────────────────── */
+
+.label-title {
+
+    -fx-font-family: "Consolas";
+    -fx-font-size: 56px;
+    -fx-font-weight: bold;
+
+    -fx-text-fill: -green-main;
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(0,255,120,0.22),
+            10,
+            0.12,
+            0,
+            0
+    );
+}
+
+/* ── Subtitle ────────────────────────────────────────── */
+
+.label-subtitle {
+
+    -fx-font-family: "Consolas";
+    -fx-font-size: 13px;
+
+    -fx-text-fill: -green-soft;
+
+    -fx-letter-spacing: 1px;
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(0,255,100,0.12),
+            4,
+            0.05,
+            0,
+            0
+    );
+}
+
+/* ── HUD Labels ──────────────────────────────────────── */
+
+.label-hud {
+
+    -fx-font-family: "Consolas";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+
+    -fx-text-fill: -green-main;
+}
+
+.label-woolong {
+
+    -fx-font-family: "Consolas";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+
+    -fx-text-fill: -amber;
+}
+
+.label-error {
+
+    -fx-font-family: "Consolas";
+    -fx-font-size: 12px;
+
+    -fx-text-fill: -danger;
+}
+
+/* ── Primary Button ──────────────────────────────────── */
+
+.btn-primary {
+
+    -fx-font-family: "Consolas";
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+
+    -fx-text-fill: -text-dark;
+
+    -fx-background-color: -green-main;
+
+    -fx-padding: 14 44;
+
+    -fx-background-radius: 2;
+
+    -fx-border-color: transparent;
+
+    -fx-cursor: hand;
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(0,255,120,0.28),
+            12,
+            0.15,
+            0,
+            0
+    );
+}
+
+.btn-primary:hover {
+
+    -fx-background-color: #33ff88;
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(0,255,120,0.40),
+            16,
+            0.22,
+            0,
+            0
+    );
+}
+
+/* ── Secondary Button ────────────────────────────────── */
+
+.btn-secondary {
+
+    -fx-font-family: "Consolas";
+    -fx-font-size: 14px;
+
+    -fx-text-fill: -green-soft;
+
+    -fx-background-color: transparent;
+
+    -fx-padding: 12 36;
+
+    -fx-border-color: -green-dim;
+    -fx-border-width: 1;
+
+    -fx-background-radius: 0;
+
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+
+    -fx-text-fill: -green-main;
+
+    -fx-border-color: -green-main;
+
+    -fx-background-color: rgba(0,255,120,0.05);
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(0,255,120,0.18),
+            8,
+            0.1,
+            0,
+            0
+    );
+}
+
+/* ── Choice Buttons ──────────────────────────────────── */
+
+.btn-choice {
+
+    -fx-font-family: "Consolas";
+    -fx-font-size: 13px;
+
+    -fx-text-fill: -green-soft;
+
+    -fx-background-color: -bg-panel;
+
+    -fx-padding: 10 14;
+
+    -fx-border-color: -green-dim;
+    -fx-border-width: 1;
+
+    -fx-alignment: CENTER_LEFT;
+
+    -fx-cursor: hand;
+}
+
+.btn-choice:hover {
+
+    -fx-text-fill: -green-main;
+
+    -fx-border-color: -green-main;
+
+    -fx-background-color: rgba(0,255,120,0.04);
+}
+
+/* ── Narrative Area ──────────────────────────────────── */
+
+.narrative-area {
+
+    -fx-font-family: "Consolas";
+    -fx-font-size: 14px;
+
+    -fx-text-fill: -green-soft;
+
+    -fx-background-color: transparent;
+
+    -fx-padding: 18;
+
+    -fx-wrap-text: true;
+}
+
+.narrative-area .content {
+    -fx-background-color: transparent;
+}
+
+/* ── TextField ───────────────────────────────────────── */
+
+.field-input {
+
+    -fx-font-family: "Consolas";
+    -fx-font-size: 14px;
+
+    -fx-text-fill: -green-main;
+
+    -fx-background-color: -bg-panel;
+
+    -fx-border-color: -green-dim;
+    -fx-border-width: 1;
+
+    -fx-padding: 10;
+}
+
+.field-input:focused {
+
+    -fx-border-color: -green-main;
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(0,255,120,0.16),
+            8,
+            0.08,
+            0,
+            0
+    );
+}
+
+/* ── HUD Bars ────────────────────────────────────────── */
+
+.hud-bar {
+
+    -fx-background-color: rgba(2,4,2,0.92);
+
+    -fx-padding: 10 18;
+
+    -fx-border-color: -green-dim;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* ── Panels ──────────────────────────────────────────── */
+
+.choices-panel {
+
+    -fx-background-color: rgba(2,4,2,0.94);
+
+    -fx-padding: 14;
+
+    -fx-border-color: -green-dim;
+    -fx-border-width: 1 0 0 0;
+}
+
+.market-card {
+
+    -fx-background-color: -bg-panel;
+
+    -fx-padding: 14;
+
+    -fx-border-color: -green-dim;
+    -fx-border-width: 1;
+}
+
+.market-card:hover {
+
+    -fx-border-color: -green-main;
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(0,255,120,0.14),
+            8,
+            0.08,
+            0,
+            0
+    );
+}
+
+/* ── ChoiceBox ───────────────────────────────────────── */
+
+.choice-box {
+
+    -fx-background-color: #071107;
+
+    -fx-border-color: #0b5d2a;
+    -fx-border-width: 1;
+
+    -fx-mark-color: #00ff66;
+}
+
+/* testo selezionato */
+.choice-box > .label {
+
+    -fx-text-fill: #00ff66;
+
+    -fx-font-family: "Consolas";
+    -fx-font-size: 13px;
+}
+
+/* popup dropdown */
+.choice-box .context-menu {
+
+    -fx-background-color: #071107;
+
+    -fx-border-color: #0b5d2a;
+    -fx-border-width: 1;
+}
+
+/* elementi menu */
+.choice-box .menu-item {
+
+    -fx-background-color: #071107;
+}
+
+/* testo menu */
+.choice-box .menu-item .label {
+
+    -fx-text-fill: #00ff66;
+
+    -fx-font-family: "Consolas";
+}
+
+/* hover menu */
+.choice-box .menu-item:focused {
+
+    -fx-background-color: rgba(0,255,120,0.15);
+}
+
+/* selected item */
+.choice-box .menu-item:focused .label {
+
+    -fx-text-fill: #33ff88;
+}
+
+/* ── Buttons ───────────────────────────────────────── */
+
+/* Stile base per i pulsanti di gioco (stile Space Cowboy) */
+
+/* 1. STATO BASE & FOCUSED: Identici. Il pulsante non si "incastra" più quando perdi il mouse */
+.button, .button:focused {
+    -fx-background-color: #020402 !important; /* Sfondo sempre nero di base */
+    -fx-text-fill: #00FF41 !important;        /* Testo verde neon */
+    -fx-border-color: #00FF41 !important;     /* Bordo verde neon */
+    -fx-border-width: 1.5px !important;
+    -fx-border-radius: 0px !important;        /* Angoli vivi cyberpunk */
+    -fx-background-radius: 0px !important;
+    -fx-font-family: "Impact";
+    -fx-font-size: 16px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+
+    /* Nuke totale dei riflessi azzurri/bianchi nativi di JavaFX */
+    -fx-focus-color: transparent !important;
+    -fx-faint-focus-color: transparent !important;
+    -fx-background-insets: 0 !important;
+}
+
+/* 2. STATO HOVER: Si illumina SOLO quando il puntatore è fisicamente sopra */
+.button:hover, .button:focused:hover {
+    -fx-background-color: #00FF41 !important; /* Inversione: sfondo verde pieno */
+    -fx-text-fill: #020402 !important;        /* Testo nero */
+    -fx-border-color: #00FF41 !important;
+    -fx-background-insets: 0 !important;
+}
+
+/* 3. STATO PREMUTO: Feedback del click fisico */
+.button:pressed, .button:armed {
+    -fx-background-color: #00AA30 !important; /* Verde più scuro analogico */
+    -fx-text-fill: #020402 !important;
+    -fx-border-color: #00AA30 !important;
+}
+
+/* 4. STATO DISABILITATO: Per le scelte bloccate (es. Richiede Gunslinger) */
+.button:disabled {
+    -fx-opacity: 0.35 !important;             /* Trasparente/Spento stile monitor offline */
+    -fx-background-color: #020402 !important;
+    -fx-text-fill: #00FF41 !important;
+    -fx-border-color: #00FF41 !important;
+}
+
+/* ── Scanlines ───────────────────────────────────────── */
+
+.scanline-overlay {
+
+    -fx-background-color: rgba(0,0,0,0.10);
+}
+/* ==========================================================================
+   NUKE TOTALE DEI BORDI DELLA TEXTAREA (TESTO NARRATIVO)
+   ========================================================================== */
+
+/* Spiana il contenitore esterno sia a riposo che quando ha il focus */
+.text-area, .text-area:focused {
+    -fx-font-family: "Courier New" !important;
+    -fx-font-size: 20px !important;
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent !important;
+    -fx-border-width: 0 !important;
+    -fx-background-insets: 0 !important;
+    -fx-box-border: transparent !important;
+}
+
+/* Interviene sulla plancia di testo vera e propria (.content) */
+.text-area .content {
+    -fx-background-color: #020402 !important;          /* Abbina perfettamente lo sfondo profondo */
+    -fx-border-color: transparent !important;
+    -fx-border-width: 0 !important;
+    -fx-background-insets: 0 !important;
+}
+
+/* Pialla lo scroll-pane interno che gestisce lo scorrimento del testo */
+.text-area .scroll-pane,
+.text-area .scroll-pane .viewport,
+.text-area .scroll-pane .content {
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent !important;
+    -fx-border-width: 0 !important;
+    -fx-background-insets: 0 !important;
+}

@@ -22,6 +22,7 @@ public class EndingController {
     @FXML private TextArea logArea;
 
 
+
     /**
      * Chiamato da GameController con la sessione completata.
      */
@@ -53,6 +54,32 @@ public class EndingController {
                         "I server Helix sono cenere.\n" +
                                 "Nessuna prova, nessun processo. Ma il sistema è morto.\n\n" +
                                 "Nyx sparisce nella notte. Come sempre."
+                );
+            }
+            case "failed_broadcast" -> {
+                endingTitleLabel.setText("Signal Lost.");
+                endingSummaryArea.setText(
+                        "I dati erano falsi. Kessler lo sapeva.\n" +
+                                "La trasmissione non ha cambiato niente.\n\n" +
+                                "Helix sopravvive. Voi anche — ma è difficile\n" +
+                                "chiamarla una vittoria."
+                );
+            }
+            case "betrayed" -> {
+                endingTitleLabel.setText("Checkmate.");
+                endingSummaryArea.setText(
+                        "Marcus ha esitato. Kessler ha letto quell'esitazione.\n\n" +
+                                "Kessler è libero. Marcus non ti guarda più.\n" +
+                                "Alcune cose, una volta rotte, non si riparano."
+                );
+            }
+            case "failed_destroy" -> {
+                endingTitleLabel.setText("System Error.");
+                endingSummaryArea.setText(
+                        "Senza Nyx non sapevate dove colpire.\n" +
+                                "La sicurezza Helix vi ha bloccati prima\n" +
+                                "dei server principali.\n\n" +
+                                "La macchina continua a girare."
                 );
             }
             default -> {

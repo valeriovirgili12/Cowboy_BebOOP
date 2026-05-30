@@ -48,17 +48,17 @@ public class MarketController {
                     "-fx-border-color: #333333; -fx-border-width: 1;");
 
             Label name = new Label(item.getDisplayName() + " — ₩ " + item.getCost());
-            name.setStyle("-fx-text-fill: #f0c040; -fx-font-family: 'Courier New'; " +
-                    "-fx-font-weight: bold;");
+            name.setStyle("-fx-text-fill: #00FF41; -fx-font-family: 'Courier New';" +
+                    " -fx-font-weight: bold; -fx-font-size: 20px;");
 
             Label desc = new Label(item.getDescription());
-            desc.setStyle("-fx-text-fill: #aaaaaa; -fx-font-family: 'Courier New'; " +
-                    "-fx-font-size: 11px;");
+            desc.setStyle("-fx-text-fill: #aaaaaa; -fx-font-family: 'Courier New';" +
+                    " -fx-font-size: 16px;");
             desc.setWrapText(true);
 
             Label effect = new Label(item.getEffect());
-            effect.setStyle("-fx-text-fill: #888888; -fx-font-family: 'Courier New'; " +
-                    "-fx-font-size: 10px; -fx-font-style: italic;");
+            effect.setStyle("-fx-text-fill: #777777; -fx-font-family: 'Courier New';" +
+                    " -fx-font-size: 14px;" + " -fx-font-style: italic; -fx-wrap-text: true;");
             effect.setWrapText(true);
 
             Button buyBtn = new Button("ACQUISTA");
@@ -79,13 +79,13 @@ public class MarketController {
             btn.setDisable(true);
             updateWoolong();
         } else {
-            messageLabel.setText("Woolong insufficienti.");
+            messageLabel.setText("Woolong insufficienti. Hai troppo cuore per essere un Cacciatore di Taglie...");
         }
     }
 
     @FXML
     private void onLeave() {
-        boolean canContinue = gameService.applyFixedCosts(5000);
+        boolean canContinue = gameService.applyFixedCosts(1000);
         if (!canContinue) {
             GameOverController gameOverController =
                     SceneManager.switchToAndGetController(AppScene.GAME_OVER);
@@ -98,6 +98,6 @@ public class MarketController {
         }
         GameController gameController =
                 SceneManager.switchToAndGetController(AppScene.GAME);
-        gameController.initSession(gameService);
+        gameController.initSession(gameService, 2); // passa indice 2 — dopo il mercato
     }
 }

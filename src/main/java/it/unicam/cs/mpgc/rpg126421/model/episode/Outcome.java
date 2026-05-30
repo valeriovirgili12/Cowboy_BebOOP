@@ -38,6 +38,32 @@ public class Outcome {
     public boolean causesGameOver() { return causesGameOver; }
     public boolean hasFailureOutcome()  { return failureOutcome != null; }
     public Outcome getFailureOutcome()  { return failureOutcome; }
+    public String getSummary() {
+        StringBuilder sb = new StringBuilder();
+
+        if (moraleDelta != 0) {
+            sb.append("Morale ").append(moraleDelta > 0 ? "+" : "").append(moraleDelta);
+        }
+
+        trustDeltas.forEach((name, delta) -> {
+            if (!sb.isEmpty()) sb.append("  |  ");
+            String displayName = name.equalsIgnoreCase("marcus")
+                    ? "Marcus Trust"
+                    : name;
+            sb.append(displayName).append(" ")
+                    .append(delta > 0 ? "+" : "").append(delta);
+        });
+
+        return sb.toString();
+    }
+
+    /**
+     * Restituisce solo il delta woolong formattato, o stringa vuota.
+     */
+    public String getWoolongSummary() {
+        if (woolongDelta == 0) return "";
+        return "₩ " + (woolongDelta > 0 ? "+" : "") + woolongDelta;
+    }
     // ── Builder ──────────────────────────────────────────────────────────────
 
     public static class Builder {

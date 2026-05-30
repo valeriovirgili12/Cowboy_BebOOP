@@ -114,7 +114,7 @@ public class EpisodeOne extends Episode {
                                 "Marcus non parla per il resto della giornata.")
                         .build()
         ).logEntry("Hai consegnato Lena Morrow all'ISSP.")
-                .timeout(10) // ← scatta se il giocatore non decide
+                .timeout(30) // ← scatta se il giocatore non decide
                 .keyChoice()
                 .build();
 

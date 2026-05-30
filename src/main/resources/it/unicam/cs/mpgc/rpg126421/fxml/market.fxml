@@ -1,39 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="it.unicam.cs.mpgc.rpg126421.controller.MarketController"
-            style="-fx-background-color: #0a0a0a;">
+            prefWidth="1024"
+            prefHeight="768"
+            style="-fx-background-color: #020402;">
+
+    <stylesheets>
+        <URL value="@/it/unicam/cs/mpgc/rpg126421/css/bebop.css"/>
+    </stylesheets>
+
     <top>
         <HBox spacing="24" alignment="CENTER_LEFT"
-              style="-fx-background-color: #111111; -fx-padding: 12 20;
-                     -fx-border-color: #f0c040; -fx-border-width: 0 0 1 0;">
+              style="-fx-background-color: #020402; -fx-padding: 15 25;
+                     -fx-border-color: #00FF41; -fx-border-width: 0 0 1 0;">
             <Label text="MERCATO NERO"
-                   style="-fx-text-fill: #f0c040; -fx-font-family: 'Courier New';
-                          -fx-font-weight: bold; -fx-font-size: 16px;"/>
+                   style="-fx-text-fill: #00FF41; -fx-font-family: 'Impact';
+                          -fx-font-size: 24px; -fx-effect: dropshadow(three-pass-box, rgba(0,255,65,0.3), 10, 0, 0, 0);"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="woolongLabel"
                    style="-fx-text-fill: #f0c040; -fx-font-family: 'Courier New';
-                          -fx-font-weight: bold;"/>
+                          -fx-font-weight: bold; -fx-font-size: 18px;"/>
         </HBox>
     </top>
+
     <center>
         <ScrollPane fitToWidth="true"
-                    style="-fx-background-color: #0a0a0a;">
-            <VBox fx:id="itemsBox" spacing="12"
-                  style="-fx-padding: 20;"/>
+                    hbarPolicy="NEVER"
+                    style="-fx-background-color: transparent; -fx-background: #020402;
+                           -fx-border-color: transparent; -fx-viewport-background: #020402;">
+            <VBox fx:id="itemsBox" spacing="18"
+                  style="-fx-padding: 25; -fx-background-color: #020402;"/>
         </ScrollPane>
     </center>
+
     <bottom>
-        <VBox style="-fx-background-color: #111111; -fx-padding: 12 20;
-                     -fx-border-color: #f0c040; -fx-border-width: 1 0 0 0;">
-            <Label fx:id="messageLabel" text=""
-                   style="-fx-text-fill: #aaaaaa; -fx-font-family: 'Courier New';"/>
-            <Button text="LASCIA LA STAZIONE →" onAction="#onLeave"
-                    style="-fx-background-color: #f0c040; -fx-text-fill: #0a0a0a;
-                           -fx-font-family: 'Courier New'; -fx-font-weight: bold;
-                           -fx-padding: 10 24; -fx-cursor: hand;"/>
+        <VBox spacing="4" alignment="CENTER_LEFT">
+            <Label text="⚠ Partenza: -1000₩ carburante e rifornimenti"
+                   style="-fx-font-family: 'Courier New'; -fx-font-size: 15px;
+                  -fx-text-fill: #ffb000;"/>
+            <Button text="[ LASCIA LA STAZIONE → ]" onAction="#onLeave"
+                    style="-fx-background-color: #00ff41; -fx-text-fill: #010a01;
+                   -fx-font-family: 'Courier New'; -fx-font-weight: bold;
+                   -fx-padding: 10 24; -fx-cursor: hand;"/>
         </VBox>
     </bottom>
 </BorderPane>
