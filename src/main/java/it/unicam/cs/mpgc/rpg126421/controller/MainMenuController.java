@@ -12,14 +12,8 @@ import javafx.scene.control.Label;
  */
 public class MainMenuController {
 
-    @FXML private Label titleLabel;
     @FXML private Button newGameButton;
     @FXML private Button quitButton;
-
-    @FXML
-    public void initialize() {
-        titleLabel.setText("Cowboy BebOOP");
-    }
 
     @FXML
     private void onNewGame() {

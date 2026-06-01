@@ -7,6 +7,7 @@
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.paint.Color?>
 <?import java.net.URL?>
+<?import javafx.scene.image.Image?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="it.unicam.cs.mpgc.rpg126421.controller.CharacterCreationController"
@@ -23,152 +24,139 @@
     <Pane styleClass="scanline-overlay" mouseTransparent="true"/>
 
     <HBox alignment="CENTER"
-          spacing="80"
-          style="-fx-padding: 40;">
+          spacing="60"
+          style="-fx-padding: 30 40 20 40;">
 
-        <VBox alignment="CENTER"
-              spacing="30"
-              prefWidth="450"
-              HBox.hgrow="ALWAYS">
+        <VBox alignment="TOP_CENTER"
+              spacing="35"
+              prefWidth="480"
+              HBox.hgrow="ALWAYS"
+              style="-fx-padding: 10 0 0 0;"> <Label text="CREA IL TUO&#10;PERSONAGGIO"
+                                                     textAlignment="CENTER"
+                                                     style="-fx-text-fill: #00FF41; -fx-line-spacing: -5px; -fx-padding: 0 0 10 0;">
+            <font>
+                <Font name="Impact" size="52.0" /> </font>
+            <effect>
+                <DropShadow radius="15.0" spread="0.3">
+                    <color>
+                        <Color red="0.0" green="1.0" blue="0.2" opacity="0.6"/>
+                    </color>
+                </DropShadow>
+            </effect>
+        </Label>
 
-            <Label text="CREA IL TUO&#10;PERSONAGGIO"
-                   textAlignment="CENTER"
-                   style="-fx-text-fill: #00FF41; -fx-line-spacing: -5px;">
-                <font>
-                    <Font name="Impact" size="46.0" />
-                </font>
-                <effect>
-                    <DropShadow radius="15.0" spread="0.3">
-                        <color>
-                            <Color red="0.0" green="1.0" blue="0.2" opacity="0.6"/>
-                        </color>
-                    </DropShadow>
-                </effect>
-            </Label>
-
-            <VBox spacing="8"
-                  maxWidth="340"
-                  style="-fx-background-color: #021a02;
-             -fx-border-color: #004d14;
-             -fx-border-width: 1;
-             -fx-padding: 14;">
+            <VBox spacing="14"
+                  maxWidth="440"
+                  VBox.vgrow="ALWAYS"
+                  style="-fx-background-color: rgba(2, 26, 2, 0.45);
+                         -fx-border-color: #00ff41;
+                         -fx-border-width: 1.5;
+                         -fx-padding: 22;
+                         -fx-background-radius: 4;
+                         -fx-border-radius: 4;
+                         -fx-effect: dropshadow(three-pass-box, rgba(0,255,65,0.1), 10, 0, 0, 0);">
 
                 <Label text="&gt; FIELD MANUAL"
                        style="-fx-text-fill: #00ff41; -fx-font-family: 'Courier New';
-                  -fx-font-weight: bold; -fx-font-size: 13px;"/>
+                              -fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 0 0 5 0;"/>
 
-                <Label text="WOOLONG  Valuta di gioco. Guadagni con le taglie,
-perdi con le spese. Sotto di 2000: game over."
-                       wrapText="true" maxWidth="312"
-                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New';
-                  -fx-font-size: 12px;"/>
+                <Label text="WOOLONG&#10;Valuta di gioco. Guadagni con le taglie, perdi con le spese. Sotto di 2000: game over."
+                       wrapText="true" maxWidth="400"
+                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New'; -fx-font-size: 13px; -fx-line-spacing: 2px;"/>
 
-                <Label text="MORALE  Scende con scelte ciniche, sale con
-quelle oneste. Influenza i dialoghi."
-                       wrapText="true" maxWidth="312"
-                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New';
-                  -fx-font-size: 12px;"/>
+                <Label text="MORALE&#10;Scende con scelte ciniche, sale con quelle oneste. Influenza i dialoghi."
+                       wrapText="true" maxWidth="400"
+                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New'; -fx-font-size: 13px; -fx-line-spacing: 2px;"/>
 
-                <Label text="MARCUS TRUST  La fiducia del tuo compagno.
-Non la dare per scontata"
-                       wrapText="true" maxWidth="312"
-                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New';
-                  -fx-font-size: 12px;"/>
+                <Label text="MARCUS TRUST&#10;La fiducia del tuo compagno. Non la dare per scontata."
+                       wrapText="true" maxWidth="400"
+                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New'; -fx-font-size: 13px; -fx-line-spacing: 2px;"/>
 
-                <Label text="CARBURANTE  Tra episodi paghi 1000₩ di
-rifornimento e cibo. Pianifica le spese."
-                       wrapText="true" maxWidth="312"
-                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New';
-                  -fx-font-size: 12px;"/>
+                <Label text="CARBURANTE&#10;Tra episodi paghi 1000₩ di rifornimento e cibo. Pianifica le spese."
+                       wrapText="true" maxWidth="400"
+                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New'; -fx-font-size: 13px; -fx-line-spacing: 2px;"/>
 
-                <Label text="SCELTE  Alcune hanno un timer. Alcune
-falliscono senza i requisiti giusti."
-                       wrapText="true" maxWidth="312"
-                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New';
-                  -fx-font-size: 12px;"/>
+                <Label text="SCELTE&#10;Alcune hanno un timer. Alcune falliscono senza i requisiti giusti."
+                       wrapText="true" maxWidth="400"
+                       style="-fx-text-fill: #00cc33; -fx-font-family: 'Courier New'; -fx-font-size: 13px; -fx-line-spacing: 2px;"/>
             </VBox>
 
             <Label text="★ ISSP WANTED NETWORK REGISTRATION ★"
-                   style="-fx-text-fill: #00FF41; -fx-font-weight: bold;">
+                   style="-fx-text-fill: #00FF41; -fx-font-weight: bold; -fx-opacity: 0.8;">
                 <font>
-                    <Font name="Courier New" size="15.0" />
+                    <Font name="Courier New" size="13.0" />
                 </font>
-                <effect>
-                    <DropShadow radius="5.0">
-                        <color>
-                            <Color red="0.0" green="1.0" blue="0.2" opacity="0.5"/>
-                        </color>
-                    </DropShadow>
-                </effect>
             </Label>
         </VBox>
 
-        <VBox spacing="40"
-              prefWidth="450"
+        <VBox spacing="35"
+              prefWidth="480"
               alignment="CENTER_LEFT"
               HBox.hgrow="ALWAYS">
 
-            <VBox spacing="12">
-                <Label text="&gt; NOME" style="-fx-text-fill: #00FF41;">
-                    <font>
-                        <Font name="Impact" size="20.0" />
-                    </font>
-                </Label>
-                <TextField fx:id="nameField"
-                           promptText="Inserisci il nome..."
-                           styleClass="field-input"
-                           prefWidth="400"
-                           maxWidth="400"
-                           prefHeight="50"
-                           style="-fx-font-family: 'Courier New'; -fx-font-size: 16px;"/>
-            </VBox>
+            <HBox spacing="25" alignment="CENTER_LEFT">
+                <ImageView fitWidth="220" fitHeight="220"
+                           preserveRatio="true"
+                           style="-fx-effect: dropshadow(three-pass-box, rgba(0,255,65,0.15), 10, 0, 0, 0);
+                                  -fx-border-color: #00ff41; -fx-border-width: 1;">
+                    <image>
+                        <Image url="@/sprites/characters/protagonist_facecard.png"/>
+                    </image>
+                </ImageView>
+
+                <VBox spacing="12" HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
+                    <Label text="&gt; NOME" style="-fx-text-fill: #00FF41;">
+                        <font>
+                            <Font name="Impact" size="22.0"/>
+                        </font>
+                    </Label>
+                    <TextField fx:id="nameField"
+                               promptText="Inserisci il nome..."
+                               styleClass="field-input"
+                               prefHeight="45"
+                               style="-fx-font-family: 'Courier New'; -fx-font-size: 16px;"/>
+                </VBox>
+            </HBox>
 
             <VBox spacing="12">
                 <Label text="&gt; CLASSE" style="-fx-text-fill: #00FF41;">
                     <font>
-                        <Font name="Impact" size="20.0" />
+                        <Font name="Impact" size="22.0" />
                     </font>
                 </Label>
 
                 <ChoiceBox fx:id="classChoiceBox"
-                           prefWidth="400"
-                           maxWidth="400"
+                           prefWidth="440"
+                           maxWidth="440"
                            prefHeight="50"
-                           style="-fx-font-family: 'Courier New'; -fx-font-size: 16px;"/>
+                           style="-fx-font-family: 'Courier New'; -fx-font-size: 18px; -fx-font-weight: bold;"/>
 
                 <Label fx:id="perkLabel"
                        wrapText="true"
-                       maxWidth="400"
-                       styleClass="label-subtitle"
-                       style="-fx-padding: 10 0 0 0; -fx-text-fill: #00FF41;">
-                    <font>
-                        <Font name="Courier New" size="15.0" />
-                    </font>
+                       maxWidth="440"
+                       style="-fx-padding: 12 0 0 0; -fx-text-fill: #00FF41; -fx-font-family: 'Courier New'; -fx-font-size: 16px; -fx-line-spacing: 3px;">
                 </Label>
             </VBox>
 
             <Label fx:id="errorLabel"
                    styleClass="label-error"
-                   maxWidth="400"
+                   maxWidth="440"
                    wrapText="true"
                    style="-fx-text-fill: #FF3333; -fx-font-family: 'Courier New'; -fx-font-size: 14px;"/>
 
-            <HBox spacing="30"
-                  alignment="CENTER_LEFT"
-                  style="-fx-padding: 20 0 0 0;">
-
+            <HBox spacing="30" alignment="CENTER_LEFT">
                 <Button text="[ INDIETRO ]"
                         onAction="#onBack"
                         styleClass="btn-secondary"
-                        prefWidth="185"
-                        prefHeight="55"
+                        prefWidth="195"
+                        prefHeight="50"
                         style="-fx-font-family: 'Impact'; -fx-font-size: 18px;"/>
 
                 <Button text="[ INIZIA ]"
                         onAction="#onStartGame"
                         styleClass="btn-primary"
-                        prefWidth="185"
-                        prefHeight="55"
+                        prefWidth="195"
+                        prefHeight="50"
                         style="-fx-font-family: 'Impact'; -fx-font-size: 18px;"/>
             </HBox>
         </VBox>

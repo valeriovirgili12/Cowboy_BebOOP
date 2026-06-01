@@ -9,12 +9,15 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 import java.util.List;
+import java.util.Map;
+
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 
@@ -31,6 +34,9 @@ public class GameController {
     @FXML private Label moraleLabel;
     @FXML private TextArea narrativeArea;
     @FXML private HBox choicesBox;
+    @FXML private ImageView backgroundImage;
+    @FXML private ImageView characterImage;
+    @FXML private VBox characterPanel;
 
     private GameService gameService;
     private int currentEpisodeIndex = 0;
@@ -105,12 +111,14 @@ public class GameController {
     }
 
     private void renderScene(Scene scene) {
-        System.out.println("Scene id: " + scene.getId());
-
+        System.out.println("Scene: " + scene.getId());
+        System.out.println("Narrative: " + scene.getNarrativeText());
+        System.out.println("Choices: " + scene.getChoices().size());        updateSceneVisuals(scene);
         if (isFinalScene(scene)) {
             renderFinalScene(scene);
             return;
         }
+
         animateText(scene.getNarrativeText());
         choicesBox.getChildren().clear();
 
@@ -162,13 +170,23 @@ public class GameController {
                 }
 
                 if (!summary.isBlank()) {
-                    Label summaryLabel = new Label(summary);
-                    summaryLabel.setStyle(
-                            "-fx-font-family: 'Courier New'; " +
-                                    "-fx-font-size: 15px; " +
-                                    "-fx-text-fill: #00cc33;"
-                    );
-                    summaryBox.getChildren().add(summaryLabel);
+                    // Spezza la stringa ogni volta che trova un "|" (gestendo anche gli spazi attorno)
+                    String[] parts = summary.split("\\s*\\|\\s*");
+
+                    for (String part : parts) {
+                        if (!part.isBlank()) {
+                            Label summaryLabel = new Label(part);
+                            summaryLabel.setStyle(
+                                    "-fx-font-family: 'Courier New'; " +
+                                            "-fx-font-size: 15px; " +
+                                            "-fx-text-fill: #00cc33;"
+                            );
+                            // Abilitiamo il wrap automatico per sicurezza
+                            summaryLabel.setWrapText(true);
+
+                            summaryBox.getChildren().add(summaryLabel);
+                        }
+                    }
                 }
 
                 choiceContainer.getChildren().add(summaryBox);
@@ -304,6 +322,48 @@ public class GameController {
     }
     private boolean isFinalScene(Scene scene) {
         return scene.getId().equals("ep3_s3");
+    }
+
+    private static final Map<String, String> SCENE_CHARACTERS = Map.of(
+            "ep1_s1", "/sprites/characters/lena_facecard.png",
+            "ep1_s2", "/sprites/characters/lena_facecard.png",
+            "ep1_s3", "/sprites/characters/lena_facecard.png",
+            "ep2_s2", "/sprites/characters/nyx_facecard.png",
+            "ep2_s4", "/sprites/characters/nyx_facecard.png",
+            "ep3_s2", "/sprites/characters/kessler_facecard.png"
+    );
+
+    private static final Map<String, String> SCENE_BACKGROUNDS = Map.of(
+            "ep1_s1", "/sprites/background/ep1_bg.png",
+            "ep1_s2", "/sprites/background/ep1_bg.png",
+            "ep1_s3", "/sprites/background/ep1_bg.png",
+            "ep2_s1", "/sprites/background/ep2_bg.png",
+            "ep2_s2", "/sprites/background/ep2_bg.png",
+            "ep2_s3", "/sprites/background/ep2_bg.png",
+            "ep2_s4", "/sprites/background/ep2_bg.png",
+            "ep3_s1", "/sprites/background/ep3_bg.png",
+            "ep3_s2", "/sprites/background/ep3.1_bg.png"
+    );
+
+    private void updateSceneVisuals(Scene scene) {
+        // sfondo
+        String bgPath = SCENE_BACKGROUNDS.get(scene.getId());
+        if (bgPath != null) {
+            backgroundImage.setImage(new javafx.scene.image.Image(
+                    getClass().getResourceAsStream(bgPath)));
+        }
+
+        // facecard
+        String charPath = SCENE_CHARACTERS.get(scene.getId());
+        if (charPath != null) {
+            characterImage.setImage(new javafx.scene.image.Image(
+                    getClass().getResourceAsStream(charPath)));
+            characterPanel.setVisible(true);
+            characterPanel.setManaged(true);
+        } else {
+            characterPanel.setVisible(false);
+            characterPanel.setManaged(false);
+        }
     }
 
     private void animateText(String text) {

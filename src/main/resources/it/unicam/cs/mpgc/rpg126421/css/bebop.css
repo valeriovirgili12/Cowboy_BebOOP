@@ -421,7 +421,7 @@
 /* Spiana il contenitore esterno sia a riposo che quando ha il focus */
 .text-area, .text-area:focused {
     -fx-font-family: "Courier New" !important;
-    -fx-font-size: 20px !important;
+    -fx-font-size: 18px !important; /* Portato a 18px per una leggibilità da monitor CRT ottimale */
     -fx-background-color: transparent !important;
     -fx-border-color: transparent !important;
     -fx-border-width: 0 !important;
@@ -445,4 +445,66 @@
     -fx-border-color: transparent !important;
     -fx-border-width: 0 !important;
     -fx-background-insets: 0 !important;
+}
+/* ==========================================================================
+   AGGIORNAMENTO TERMINAL BOX & TEXTAREA (SEZIONE DI GIOCO)
+   ========================================================================== */
+
+/* 1. La Finestra del Terminale (Il box esterno verde neon) */
+.terminal-box {
+    /* Mantiene le proprietà strutturali definite via FXML,
+       qui puoi aggiungere animazioni o stili globali futuri */
+}
+
+/* 2. Pulizia totale della TextArea interna */
+.text-area, .text-area:focused {
+    -fx-font-family: "Courier New" !important;
+    -fx-font-size: 16px !important; /* Allineato all'FXML del gioco */
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent !important;
+    -fx-border-width: 0 !important;
+    -fx-background-insets: 0 !important;
+    -fx-box-border: transparent !important;
+}
+
+/* 3. CORREZIONE CRITICA: Forza la plancia interna (.content) ad essere TRANSPARENTE
+      In questo modo l'opacità rgba definita nell'FXML del terminal-box funzionerà! */
+.text-area .content {
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent !important;
+    -fx-border-width: 0 !important;
+    -fx-background-insets: 0 !important;
+}
+
+/* 4. Trasparenza per i componenti di scorrimento interni */
+.text-area .scroll-pane,
+.text-area .scroll-pane .viewport,
+.text-area .scroll-pane .content {
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent !important;
+    -fx-border-width: 0 !important;
+    -fx-background-insets: 0 !important;
+}
+
+/* 5. Scrollbar del Terminale in stile Retro-Green minimalista */
+.text-area .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-width: 6px; /* Sottile e discreta */
+}
+
+.text-area .scroll-bar:vertical .thumb {
+    -fx-background-color: #00ff66; /* Usa la variabile -green-main */
+    -fx-opacity: 0.3;
+    -fx-background-radius: 2px;
+}
+
+.text-area .scroll-bar:vertical .thumb:hover {
+    -fx-opacity: 0.8; /* Si illumina al passaggio del mouse */
+}
+
+/* Rimuove i pulsanti freccia sopra e sotto la scrollbar */
+.text-area .scroll-bar .increment-button,
+.text-area .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
 }

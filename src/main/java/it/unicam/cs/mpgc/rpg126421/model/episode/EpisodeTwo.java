@@ -119,8 +119,7 @@ public class EpisodeTwo extends Episode {
                 "ep2_s2",
                 "Nyx ti aspetta a un tavolo in fondo al bar. " +
                         "Come se sapesse che saresti venuto.\n\n" +
-                        "Capelli scuri, giacca consumata, uno sguardo che ha visto " +
-                        "troppe cose per fidarsi di qualcuno.\n\n" +
+                        "Acconciatura quantomeno particolare, felpa consumata, sguardo innocente.\n\n" +
                         "\"So chi siete,\" dice. " +
                         "\"E so cosa state cercando. " +
                         "Possiamo aiutarci a vicenda, o possiamo fare finta " +
@@ -237,7 +236,7 @@ public class EpisodeTwo extends Episode {
                         )
                         .build()
         )
-                .failsIf(new FlagRequirement("ep2_protected_nyx", "true"))
+                .requires(new FlagRequirement("ep2_protected_nyx", "true"))
                 .logEntry("Nyx sulla nave — per debito, non per scelta.")
                 .keyChoice()
                 .build();

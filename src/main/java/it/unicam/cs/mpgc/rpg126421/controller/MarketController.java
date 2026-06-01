@@ -8,6 +8,8 @@ import it.unicam.cs.mpgc.rpg126421.util.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
 /**
@@ -19,6 +21,8 @@ public class MarketController {
     @FXML private Label woolongLabel;
     @FXML private VBox itemsBox;
     @FXML private Label messageLabel;
+    @FXML private ImageView topItemSprite;
+    @FXML private ImageView bottomItemSprite;
 
     private GameService gameService;
     private final BlackMarket market = new BlackMarket();
@@ -27,6 +31,7 @@ public class MarketController {
         this.gameService = gameService;
         updateWoolong();
         renderItems();
+        setupSideSprites();
     }
 
     private void updateWoolong() {
@@ -47,6 +52,9 @@ public class MarketController {
             card.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 12; " +
                     "-fx-border-color: #333333; -fx-border-width: 1;");
 
+            card.setMinHeight(210);
+            card.setPrefHeight(210);
+
             Label name = new Label(item.getDisplayName() + " — ₩ " + item.getCost());
             name.setStyle("-fx-text-fill: #00FF41; -fx-font-family: 'Courier New';" +
                     " -fx-font-weight: bold; -fx-font-size: 20px;");
@@ -62,9 +70,7 @@ public class MarketController {
             effect.setWrapText(true);
 
             Button buyBtn = new Button("ACQUISTA");
-            buyBtn.setStyle("-fx-background-color: #f0c040; -fx-text-fill: #0a0a0a; " +
-                    "-fx-font-family: 'Courier New'; -fx-font-weight: bold; " +
-                    "-fx-cursor: hand;");
+            buyBtn.getStyleClass().add("button");
             buyBtn.setOnAction(e -> onBuy(item, buyBtn));
 
             card.getChildren().addAll(name, desc, effect, buyBtn);
@@ -82,6 +88,28 @@ public class MarketController {
             messageLabel.setText("Woolong insufficienti. Hai troppo cuore per essere un Cacciatore di Taglie...");
         }
     }
+    private void setupSideSprites() {
+        // Recuperiamo la lista di item disponibili oggi nel mercato
+        var available = market.getAvailableItems(gameService.getSession());
+
+        // Se c'è almeno un oggetto, imposta lo sprite superiore prendendolo dall'enum
+        if (!available.isEmpty()) {
+            Item firstItem = available.getFirst();
+            topItemSprite.setImage(new Image(getClass().getResourceAsStream(firstItem.getImagePath())));
+        } else {
+            topItemSprite.setImage(null); // Pulisce se il mercato è vuoto
+        }
+
+        // Se ci sono almeno due oggetti, imposta lo sprite inferiore
+        if (available.size() > 1) {
+            Item secondItem = available.get(1);
+            bottomItemSprite.setImage(new Image(getClass().getResourceAsStream(secondItem.getImagePath())));
+            javafx.geometry.Insets margin = new javafx.geometry.Insets(35, 0, 0, 0); // 45px di spazio sopra
+            VBox.setMargin(bottomItemSprite.getParent(), margin);
+        } else {
+            bottomItemSprite.setImage(null);
+        }
+    }
 
     @FXML
     private void onLeave() {
@@ -91,6 +119,7 @@ public class MarketController {
                     SceneManager.switchToAndGetController(AppScene.GAME_OVER);
             gameOverController.initGameOver(
                     "La Blue Mantis è rimasta senza carburante.\n" +
+                            "Saldo finale: ₩ " + gameService.getSession().getFinance().getWoolong() + "\n\n" +
                             "Non arriverete mai a Europa.",
                     gameService.getSession()
             );

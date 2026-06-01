@@ -33,9 +33,8 @@ package it.unicam.cs.mpgc.rpg126421.model.session;
          */
         public boolean spend(int amount) {
             if (amount <= 0) throw new IllegalArgumentException("Amount must be positive");
-            if (this.woolong - amount < MIN_WOOLONG) return false;
             this.woolong -= amount;
-            return true;
+            return this.woolong >= MIN_WOOLONG;
         }
 
         public boolean canAfford(int amount) {

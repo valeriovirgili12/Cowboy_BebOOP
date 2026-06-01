@@ -2,37 +2,39 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.*?>
-
 <?import java.net.URL?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="it.unicam.cs.mpgc.rpg126421.controller.MainMenuController"
            prefWidth="1024" prefHeight="768"
-           style="-fx-background-color: #010a01;">
+           style="-fx-background-color: #000000;"> <!-- Lo sfondo scuro farà da cornice esterna -->
 
     <stylesheets>
         <URL value="@/it/unicam/cs/mpgc/rpg126421/css/bebop.css"/>
     </stylesheets>
 
-    <!-- Sfondo placeholder episodio -->
-    <Pane style="-fx-background-color: #010a01;"/>
+    <!-- Contenitore Principale del Menu: racchiude l'immagine e i bottoni -->
+    <VBox alignment="CENTER" spacing="25">
 
-    <!-- Scanline overlay -->
-    <Pane styleClass="scanline-overlay" mouseTransparent="true"/>
+        <!-- Contenitore per lo Sfondo dell'Episodio: rimpicciolito e proporzionato -->
+        <StackPane alignment="CENTER" maxWidth="800" maxHeight="500" style="-fx-background-color: #000000;">
+            <ImageView fitWidth="800" fitHeight="500"
+                       preserveRatio="true"
+                       mouseTransparent="true">
+                <image>
+                    <Image url="@/sprites/ui/main_title.png"/>
+                </image>
 
-    <!-- Contenuto centrato -->
-    <VBox alignment="CENTER" spacing="16">
+            </ImageView>
 
-        <Label fx:id="titleLabel"
-               text="COWBOY BebOOP"
-               styleClass="label-title"
-               style="-fx-font-size: 52px;"/>
+            <!-- Scanline overlay applicato SOLO sopra l'immagine dell'artwork -->
+            <Pane styleClass="scanline-overlay" mouseTransparent="true"/>
+        </StackPane>
 
-        <Label text="— 3, 2, 1... LET'S JAM —"
-               styleClass="label-subtitle"/>
-
-        <VBox spacing="12" alignment="CENTER"
-              style="-fx-padding: 48 0 0 0;">
-
+        <!-- Contenitore Bottoni: Posizionato sotto l'immagine senza padding hardcore statici -->
+        <VBox spacing="14" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
             <Button fx:id="newGameButton"
                     text="[ NUOVA PARTITA ]"
                     styleClass="btn-primary"
@@ -44,8 +46,10 @@
                     onAction="#onQuit"/>
         </VBox>
 
+        <!-- Versione/Footer -->
         <Label text="v0.1 — ISSP BOUNTY NETWORK"
                styleClass="label-subtitle"
-               style="-fx-font-size: 10px; -fx-padding: 32 0 0 0;"/>
+               style="-fx-font-size: 11px; -fx-text-fill: #00cc55;"/>
     </VBox>
+
 </StackPane>
