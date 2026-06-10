@@ -1,6 +1,7 @@
 package it.unicam.cs.mpgc.rpg126421.controller;
 
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
+import it.unicam.cs.mpgc.rpg126421.service.AudioService;
 import it.unicam.cs.mpgc.rpg126421.util.AppScene;
 import it.unicam.cs.mpgc.rpg126421.util.SceneManager;
 import javafx.fxml.FXML;
@@ -20,6 +21,7 @@ public class GameOverController {
         titleLabel.setText("GAME OVER");
         reasonArea.setText(reason);
         woolongLabel.setText("Woolong alla fine: ₩ " + session.getFinance().getWoolong());
+        SceneManager.getAudio().play(AudioService.Track.GAME_OVER);
     }
 
     @FXML

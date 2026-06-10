@@ -4,7 +4,7 @@ import it.unicam.cs.mpgc.rpg126421.model.character.Captain;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
 import it.unicam.cs.mpgc.rpg126421.model.shared.CaptainClass;
-import it.unicam.cs.mpgc.rpg126421.repository.EpisodeRepositoryImpl;
+import it.unicam.cs.mpgc.rpg126421.repository.EpisodeRepository;
 import it.unicam.cs.mpgc.rpg126421.service.GameService;
 import it.unicam.cs.mpgc.rpg126421.util.AppScene;
 import it.unicam.cs.mpgc.rpg126421.util.SceneManager;
@@ -57,7 +57,7 @@ public class CharacterCreationController {
         GameSession session = new GameSession(captain);
 
         // carica gli episodi nella sessione
-        List<Episode> episodes = new EpisodeRepositoryImpl().getAllEpisodes();
+        List<Episode> episodes = new EpisodeRepository().getAllEpisodes();
         episodes.forEach(session::addEpisode);
 
         // passa la sessione al GameController

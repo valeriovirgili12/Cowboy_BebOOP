@@ -5,10 +5,10 @@ import it.unicam.cs.mpgc.rpg126421.model.market.Item;
 import it.unicam.cs.mpgc.rpg126421.service.GameService;
 import it.unicam.cs.mpgc.rpg126421.util.AppScene;
 import it.unicam.cs.mpgc.rpg126421.util.SceneManager;
+import it.unicam.cs.mpgc.rpg126421.util.SpriteLoader;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
@@ -89,23 +89,18 @@ public class MarketController {
         }
     }
     private void setupSideSprites() {
-        // Recuperiamo la lista di item disponibili oggi nel mercato
         var available = market.getAvailableItems(gameService.getSession());
 
-        // Se c'è almeno un oggetto, imposta lo sprite superiore prendendolo dall'enum
         if (!available.isEmpty()) {
-            Item firstItem = available.getFirst();
-            topItemSprite.setImage(new Image(getClass().getResourceAsStream(firstItem.getImagePath())));
+            SpriteLoader.load(topItemSprite, available.getFirst().getImagePath());
         } else {
-            topItemSprite.setImage(null); // Pulisce se il mercato è vuoto
+            topItemSprite.setImage(null);
         }
 
-        // Se ci sono almeno due oggetti, imposta lo sprite inferiore
         if (available.size() > 1) {
-            Item secondItem = available.get(1);
-            bottomItemSprite.setImage(new Image(getClass().getResourceAsStream(secondItem.getImagePath())));
-            javafx.geometry.Insets margin = new javafx.geometry.Insets(35, 0, 0, 0); // 45px di spazio sopra
-            VBox.setMargin(bottomItemSprite.getParent(), margin);
+            SpriteLoader.load(bottomItemSprite, available.get(1).getImagePath());
+            VBox.setMargin(bottomItemSprite.getParent(),
+                    new javafx.geometry.Insets(35, 0, 0, 0));
         } else {
             bottomItemSprite.setImage(null);
         }

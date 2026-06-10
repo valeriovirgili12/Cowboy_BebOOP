@@ -6,8 +6,5 @@ package it.unicam.cs.mpgc.rpg126421.model.shared;
  */
 public interface CharacterRole {
     String getDisplayName();
-    int getStrength();
-    int getTech();
-    int getResilience();
     String getPerk();
 }

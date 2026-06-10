@@ -29,11 +29,4 @@ public class BlackMarket {
                 .filter(item -> !session.hasItem(item))
                 .toList();
     }
-
-    /**
-     * Restituisce true se ci sono item ancora acquistabili.
-     */
-    public boolean hasItemsAvailable(GameSession session) {
-        return !getAvailableItems(session).isEmpty();
-    }
 }

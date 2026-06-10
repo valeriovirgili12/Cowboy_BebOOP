@@ -1,24 +1,44 @@
 package it.unicam.cs.mpgc.rpg126421.repository;
 
 import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
+import it.unicam.cs.mpgc.rpg126421.model.episode.EpisodeOne;
+import it.unicam.cs.mpgc.rpg126421.model.episode.EpisodeThree;
+import it.unicam.cs.mpgc.rpg126421.model.episode.EpisodeTwo;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
- * Interfaccia per il repository degli episodi.
- * Fornisce i 3 episodi del gioco pronti per essere aggiunti alla sessione.
- * Seguendo il principio di inversione delle dipendenze (SOLID - DIP),
- * GameService dipende da questa interfaccia, non dall'implementazione concreta.
+ * Implementazione concreta del repository episodi.
+ * Costruisce e tiene in memoria i 3 episodi del gioco.
  */
-public interface EpisodeRepository {
+public class EpisodeRepository implements IEpisodeRepository {
 
-    /**
-     * Restituisce tutti gli episodi del gioco nell'ordine corretto.
-     */
-    List<Episode> getAllEpisodes();
+    private final List<Episode> episodes;
+    private final Map<String, Episode> episodeMap;
 
-    /**
-     * Restituisce un episodio per id.
-     */
-    Episode getById(String id);
+    public EpisodeRepository() {
+        this.episodes = List.of(
+                new EpisodeOne(),
+                new EpisodeTwo(),
+                new EpisodeThree()
+        );
+        this.episodeMap = episodes.stream()
+                .collect(Collectors.toMap(Episode::getId, Function.identity()));
+    }
+
+    @Override
+    public List<Episode> getAllEpisodes() {
+        return episodes;
+    }
+
+    @Override
+    public Episode getById(String id) {
+        Episode episode = episodeMap.get(id);
+        if (episode == null)
+            throw new IllegalArgumentException("Episode not found: " + id);
+        return episode;
+    }
 }

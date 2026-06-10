@@ -1,11 +1,9 @@
 package it.unicam.cs.mpgc.rpg126421.model.episode;
 
 import it.unicam.cs.mpgc.rpg126421.model.episode.requirement.CrewClassRequirement;
-import it.unicam.cs.mpgc.rpg126421.model.episode.requirement.FlagRequirement;
-import it.unicam.cs.mpgc.rpg126421.model.episode.requirement.WoolongRequirement;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
 import it.unicam.cs.mpgc.rpg126421.model.shared.CaptainClass;
-import it.unicam.cs.mpgc.rpg126421.model.shared.CrewClass;
+import it.unicam.cs.mpgc.rpg126421.util.Sprites;
 
 import java.util.List;
 
@@ -21,6 +19,33 @@ public class EpisodeOne extends Episode {
     }
 
     private static List<Scene> buildScenes() {
+
+        Choice continueS0 = new Choice.Builder(
+                "[ INIZIA LA CACCIA ]",
+                new Outcome.Builder()
+                        .narrative("")
+                        .build()
+        ).build();
+
+        Scene scene0 = new Scene(
+                "ep1_s0",
+                "STIVA DELLA BLUE MANTIS — ORBITA SU IO\n\n" +
+                        "La nave cigola. Il carburante basta per un salto, forse due.\n" +
+                        "Marcus fissa lo schermo senza parlare.\n\n" +
+                        "Sul monitor lampeggia un avviso ISSP:\n" +
+                        "una taglia. Otto mila woolong.\n" +
+                        "Non è molto. Ma è quello che c'è.\n\n" +
+                        "A bordo ci siete voi due — tu e Marcus Veil,\n" +
+                        "ex detective ISSP, troppi anni fa.\n" +
+                        "Non parla molto del passato.\n" +
+                        "Nessuno dei due lo fa.\n\n" +
+                        "Il nome sulla scheda è Lena Morrow.\n" +
+                        "Marcus lo legge e non dice niente.\n" +
+                        "Ma la mascella si irrigidisce — appena.",
+                List.of(continueS0),
+                Sprites.LENA,
+                null
+        );
 
         // ── Scena 1 — La taglia ──────────────────────────────────────────────
         Choice findLena = new Choice.Builder(
@@ -44,7 +69,9 @@ public class EpisodeOne extends Episode {
                         "La Blue Mantis è in orbita bassa su Io. " +
                         "Il carburante basta per un altro salto, forse due. " +
                         "Marcus riconosce il cognome ma non dice nulla — ancora.",
-                List.of(findLena)
+                List.of(findLena),
+                Sprites.LENA,
+                Sprites.BG_EP1
         );
 
         // ── Scena 2 — L'incontro con Lena ────────────────────────────────────
@@ -57,7 +84,8 @@ public class EpisodeOne extends Episode {
                         .flag("ep1_listened_lena", "true")
                         .narrative("Lena parla veloce. Ha sottratto un archivio dalla Helix Corporation — " +
                                 "dati che provano come l'azienda manipoli le taglie ISSP. " +
-                                "Marcus ascolta in silenzio. La sua mascella si irrigidisce.")
+                                "Marcus ascolta in silenzio."+
+                                "Sembra come se fosse una scena già vissuta")
                         .build()
         ).logEntry("Hai ascoltato la storia di Lena.")
                 .build();
@@ -83,18 +111,21 @@ public class EpisodeOne extends Episode {
                         "perché so troppo. Se mi consegnate all'ISSP sono morta " +
                         "prima dell'interrogatorio.\"\n\n" +
                         "Marcus si è fermato sulla soglia. Non interviene.",
-                List.of(listenToLena, grabLena)
+                List.of(listenToLena, grabLena),
+                Sprites.LENA,
+                Sprites.BG_EP1
         );
 
         // ── Scena 3 — La scelta su Lena (A TEMPO) ───────────────────────────
         Choice spareLena = new Choice.Builder(
-                "Lasciala andare — non vale i problemi",
+                "Chiedigli i dati in cambio della libertà",
                 new Outcome.Builder()
                         .woolong(0)
                         .morale(20)
                         .trust("marcus", 15)
                         .flag("sparedLena", "true")
-                        .narrative("Lena sparisce nel corridoio. " +
+                        .flag("lenaPassword", "true")
+                        .narrative("Lena tira fuori l'hard disk - poi sparisce nel corridoio. " +
                                 "Hai perso la taglia, ma hai guadagnato qualcos'altro. " +
                                 "Marcus ti guarda diversamente.")
                         .build()
@@ -103,7 +134,7 @@ public class EpisodeOne extends Episode {
                 .build();
 
         Choice deliverLena = new Choice.Builder(
-                "Consegnala all'ISSP — una taglia è una taglia",
+                "Consegnala all'ISSP - una taglia è una taglia",
                 new Outcome.Builder()
                         .woolong(8000)
                         .morale(-15)
@@ -125,7 +156,7 @@ public class EpisodeOne extends Episode {
                         .morale(-5)
                         .trust("marcus", -10)
                         .flag("sparedLena", "false")
-                        .flag("ep1_copied_data", "true")
+                        .flag("lenaPassword", "true")
                         .narrative("I dati sono tuoi. Lena viene consegnata. " +
                                 "Non è pulito, ma potrebbe valere qualcosa.")
                         .build()
@@ -139,7 +170,9 @@ public class EpisodeOne extends Episode {
                 "La polizia spaziale sta convergendo sul settore.\n\n" +
                         "Hai pochi secondi per decidere cosa fare con Lena Morrow.\n\n" +
                         "Marcus: \"Qualunque cosa tu faccia, falla adesso.\"",
-                List.of(spareLena, deliverLena, sellInfo)
+                List.of(spareLena, deliverLena, sellInfo),
+                Sprites.LENA,
+                Sprites.BG_EP1
         );
 
 

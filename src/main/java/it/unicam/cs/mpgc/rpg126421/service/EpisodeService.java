@@ -1,9 +1,6 @@
 package it.unicam.cs.mpgc.rpg126421.service;
 
-import it.unicam.cs.mpgc.rpg126421.model.episode.Choice;
-import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
-import it.unicam.cs.mpgc.rpg126421.model.episode.Outcome;
-import it.unicam.cs.mpgc.rpg126421.model.episode.Scene;
+import it.unicam.cs.mpgc.rpg126421.model.episode.*;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
 
 import java.util.List;
@@ -77,15 +74,11 @@ public class EpisodeService {
      */
     public void resolveScene(Scene scene, Choice choice) {
         boolean failed = choice.willFail(session);
-
-        Outcome outcome = failed && choice.getOutcome().hasFailureOutcome()
-                ? choice.getOutcome().getFailureOutcome()
-                : choice.getOutcome();
+        Outcome outcome = selectOutcome(choice, failed);
 
         boolean causedGameOver = outcomeService.apply(outcome);
         if (causedGameOver) gameOver = true;
 
-        // reclutamento Nyx automatico dopo flag
         if ("true".equals(session.getWorldState().getFlag("recruitedNyx"))
                 && crewService.getNyx().isEmpty()) {
             crewService.recruitNyx();
@@ -93,6 +86,23 @@ public class EpisodeService {
 
         scene.complete();
         session.getNarrativeLog().add(choice.getLogEntry());
+    }
+
+    private Outcome selectOutcome(Choice choice, boolean failed) {
+        if (!failed) return choice.getOutcome();
+
+        Requirement failedCondition = choice.getFirstFailedCondition(session);
+        int index = choice.getFailConditions().indexOf(failedCondition);
+
+        return switch (index) {
+            case 0 -> choice.getOutcome().hasFailureOutcome()
+                    ? choice.getOutcome().getFailureOutcome()
+                    : choice.getOutcome();
+            case 1 -> choice.getOutcome().hasFailureOutcome2()
+                    ? choice.getOutcome().getFailureOutcome2()
+                    : choice.getOutcome();
+            default -> choice.getOutcome();
+        };
     }
 
     public boolean isGameOver() { return gameOver; }

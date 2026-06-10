@@ -17,6 +17,8 @@ public class Outcome {
     private final String narrativeText;
     private final boolean causesGameOver;
     private final Outcome failureOutcome;
+    private final Outcome failureOutcome2;
+
 
     private Outcome(Builder builder) {
         this.woolongDelta  = builder.woolongDelta;
@@ -26,7 +28,7 @@ public class Outcome {
         this.narrativeText = builder.narrativeText;
         this.causesGameOver  = builder.causesGameOver;
         this.failureOutcome = builder.failureOutcome;
-
+        this.failureOutcome2 = builder.failureOutcome2;
 
     }
 
@@ -38,6 +40,8 @@ public class Outcome {
     public boolean causesGameOver() { return causesGameOver; }
     public boolean hasFailureOutcome()  { return failureOutcome != null; }
     public Outcome getFailureOutcome()  { return failureOutcome; }
+    public boolean hasFailureOutcome2() { return failureOutcome2 != null; }
+    public Outcome getFailureOutcome2() { return failureOutcome2; }
     public String getSummary() {
         StringBuilder sb = new StringBuilder();
 
@@ -74,6 +78,7 @@ public class Outcome {
         private String narrativeText = "";
         private boolean causesGameOver = false;
         private Outcome failureOutcome = null;
+        private Outcome failureOutcome2 = null;
 
 
         public Builder woolong(int delta)               { this.woolongDelta = delta; return this; }
@@ -86,5 +91,9 @@ public class Outcome {
         public Builder onFailure(Outcome failure)
         {this.failureOutcome = failure; return this; }
         public Outcome build() { return new Outcome(this); }
+        public Builder onFailure2(Outcome failure) {
+            this.failureOutcome2 = failure;
+            return this;
+        }
     }
 }

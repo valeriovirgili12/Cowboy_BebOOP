@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.net.URL?>
-
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="it.unicam.cs.mpgc.rpg126421.controller.EndingController"
            prefWidth="1024" prefHeight="768"

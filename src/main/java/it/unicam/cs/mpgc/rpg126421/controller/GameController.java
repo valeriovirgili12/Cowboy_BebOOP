@@ -1,25 +1,27 @@
 package it.unicam.cs.mpgc.rpg126421.controller;
 
 import it.unicam.cs.mpgc.rpg126421.model.episode.Choice;
+import it.unicam.cs.mpgc.rpg126421.model.episode.Outcome;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Scene;
+import it.unicam.cs.mpgc.rpg126421.service.AudioService;
 import it.unicam.cs.mpgc.rpg126421.service.GameService;
 import it.unicam.cs.mpgc.rpg126421.util.AppScene;
 import it.unicam.cs.mpgc.rpg126421.util.SceneManager;
+import it.unicam.cs.mpgc.rpg126421.util.SpriteLoader;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
-import java.util.List;
-import java.util.Map;
-
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.util.Duration;
+
+import java.util.List;
 
 /**
  * Controller della schermata di gioco principale.
@@ -28,6 +30,7 @@ import javafx.scene.layout.GridPane;
  */
 public class GameController {
 
+    // ── FXML ─────────────────────────────────────────────────────────────────
     @FXML private Label episodeTitleLabel;
     @FXML private Label captainNameLabel;
     @FXML private Label woolongLabel;
@@ -38,58 +41,31 @@ public class GameController {
     @FXML private ImageView characterImage;
     @FXML private VBox characterPanel;
 
+    // ── Stato ─────────────────────────────────────────────────────────────────
     private GameService gameService;
     private int currentEpisodeIndex = 0;
     private Timeline activeTimer = null;
     private Timeline typewriterTimeline = null;
 
+    // ── Init ──────────────────────────────────────────────────────────────────
 
-    /**
-     * Chiamato da CharacterCreationController dopo il caricamento dell'FXML.
-     */
     public void initSession(GameService gameService) {
-        this.gameService = gameService;
-        updateHUD();
-        startNextEpisode();
+        initSession(gameService, 0);
     }
+
     public void initSession(GameService gameService, int episodeIndex) {
         this.gameService = gameService;
         this.currentEpisodeIndex = episodeIndex;
         updateHUD();
+        SceneManager.getAudio().play(AudioService.Track.GAME);
         startNextEpisode();
     }
 
-    private void startTimer(Choice choice, Scene scene, Button btn) {
-        int[] remaining = {choice.getTimeoutSeconds()};
-
-        activeTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            remaining[0]--;
-            btn.setText(choice.getText() + " [" + remaining[0] + "s]");
-            if (remaining[0] <= 0) {
-                onChoiceSelected(scene, choice);
-            }
-        }));
-        activeTimer.setCycleCount(choice.getTimeoutSeconds());
-        activeTimer.play();
-    }
-
-    private void showGameOver(String reason) {
-        GameOverController controller =
-                SceneManager.switchToAndGetController(AppScene.GAME_OVER);
-        controller.initGameOver(reason, gameService.getSession());
-    }
-
-    private void updateHUD() {
-        var session = gameService.getSession();
-        captainNameLabel.setText(session.getCaptain().getName());
-        woolongLabel.setText("₩ " + session.getFinance().getWoolong());
-        moraleLabel.setText("Morale: " + session.getCaptain().getMorale());
-    }
+    // ── Navigazione episodi ───────────────────────────────────────────────────
 
     private void startNextEpisode() {
-        // mercato nero solo tra episodio 1 e 2
         if (currentEpisodeIndex == 1) {
-            currentEpisodeIndex++; // incrementa subito così non ci torna
+            currentEpisodeIndex++;
             MarketController marketController =
                     SceneManager.switchToAndGetController(AppScene.MARKET);
             marketController.initMarket(gameService);
@@ -110,11 +86,20 @@ public class GameController {
         gameService.getCurrentScene().ifPresent(this::renderScene);
     }
 
+    private void advance() {
+        if (gameService.tryCompleteCurrentEpisode()) {
+            startNextEpisode();
+        } else {
+            showCurrentScene();
+        }
+        updateHUD();
+    }
+
+    // ── Rendering scene ───────────────────────────────────────────────────────
+
     private void renderScene(Scene scene) {
-        System.out.println("Scene: " + scene.getId());
-        System.out.println("Narrative: " + scene.getNarrativeText());
-        System.out.println("Choices: " + scene.getChoices().size());        updateSceneVisuals(scene);
-        if (isFinalScene(scene)) {
+        updateSceneVisuals(scene);
+        if (scene.isFinalScene()) {
             renderFinalScene(scene);
             return;
         }
@@ -125,81 +110,29 @@ public class GameController {
         List<Choice> available = gameService.getAvailableChoices(scene);
 
         for (Choice choice : scene.getChoices()) {
+            boolean isAvailable = available.contains(choice);
+            boolean willFail    = choice.willFail(gameService.getSession());
+
             Button btn = new Button(choice.getText());
             btn.setMaxWidth(Double.MAX_VALUE);
             btn.setWrapText(true);
             btn.getStyleClass().add("button");
 
-            boolean isAvailable = available.contains(choice);
-            boolean willFail    = choice.willFail(gameService.getSession());
-
             if (isAvailable || willFail) {
                 btn.setOnAction(e -> onChoiceSelected(scene, choice));
-                if (willFail) {
-                    btn.setStyle("-fx-border-color: #ff4444;");
-                    String hint = choice.getOutcome().hasFailureOutcome()
-                            ? "⚠ Potrebbe fallire"
-                            : "⚠ Requisiti non soddisfatti";
-                    btn.setText(choice.getText() + "\n[" + hint + "]");
-                }
-                if (choice.hasTimeout()) {
-                    startTimer(choice, scene, btn);
-                }
-            } else { btn.setDisable(true); }
-
-            // Label conseguenze sotto il bottone
-            String summary = choice.getOutcome().getSummary();
-            VBox choiceContainer = new VBox(2);
-            choiceContainer.setMaxWidth(Double.MAX_VALUE);
-            choiceContainer.getChildren().add(btn);
-
-            if (!summary.isBlank() || !choice.getOutcome().getWoolongSummary().isBlank()) {
-                VBox summaryBox = new VBox(12);
-                summaryBox.setStyle("-fx-padding: 0 0 6 10;");
-
-                String woolongSummary = choice.getOutcome().getWoolongSummary();
-                if (!woolongSummary.isBlank()) {
-                    Label woolongLabel = new Label(woolongSummary);
-                    woolongLabel.setStyle(
-                            "-fx-font-family: 'Courier New'; " +
-                                    "-fx-font-size: 15px; " +
-                                    "-fx-text-fill: #f0c040; " +
-                                    "-fx-font-weight: bold;"
-                    );
-                    summaryBox.getChildren().add(woolongLabel);
-                }
-
-                if (!summary.isBlank()) {
-                    // Spezza la stringa ogni volta che trova un "|" (gestendo anche gli spazi attorno)
-                    String[] parts = summary.split("\\s*\\|\\s*");
-
-                    for (String part : parts) {
-                        if (!part.isBlank()) {
-                            Label summaryLabel = new Label(part);
-                            summaryLabel.setStyle(
-                                    "-fx-font-family: 'Courier New'; " +
-                                            "-fx-font-size: 15px; " +
-                                            "-fx-text-fill: #00cc33;"
-                            );
-                            // Abilitiamo il wrap automatico per sicurezza
-                            summaryLabel.setWrapText(true);
-
-                            summaryBox.getChildren().add(summaryLabel);
-                        }
-                    }
-                }
-
-                choiceContainer.getChildren().add(summaryBox);
+                if (choice.hasTimeout()) startTimer(choice, scene, btn);
+            } else {
+                btn.setDisable(true);
             }
 
-            choicesBox.getChildren().add(choiceContainer);
+            VBox container = buildChoiceContainer(btn, choice.getOutcome());
+            choicesBox.getChildren().add(container);
         }
     }
+
     private void renderFinalScene(Scene scene) {
         animateText(scene.getNarrativeText());
         choicesBox.getChildren().clear();
-
-        List<Choice> choices = scene.getChoices();
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -207,29 +140,16 @@ public class GameController {
         grid.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(grid, javafx.scene.layout.Priority.ALWAYS);
 
-        ColumnConstraints col1 = new ColumnConstraints();
-        col1.setPercentWidth(50);
-        ColumnConstraints col2 = new ColumnConstraints();
-        col2.setPercentWidth(50);
-        grid.getColumnConstraints().addAll(col1, col2);
+        ColumnConstraints col = new ColumnConstraints();
+        col.setPercentWidth(50);
+        grid.getColumnConstraints().addAll(col, new ColumnConstraints());
+        grid.getColumnConstraints().get(1).setPercentWidth(50);
 
-        int[][] positions = {{0,0}, {1,0}, {0,1}, {1,1}};
+        int[][] positions = {{0, 0}, {1, 0}, {0, 1}, {1, 1}};
+        List<Choice> choices = scene.getChoices();
 
         for (int i = 0; i < choices.size() && i < 4; i++) {
             Choice choice = choices.get(i);
-            boolean willFail = choice.willFail(gameService.getSession());
-
-            VBox card = new VBox(6);
-            card.setMaxWidth(Double.MAX_VALUE);
-            card.setMaxHeight(Double.MAX_VALUE);
-            card.setStyle(
-                    "-fx-background-color: #021a02; " +
-                            "-fx-border-color: " + (choice.getOutcome().hasFailureOutcome() ? "#ffb000" : "#004d14") + "; " +
-                            "-fx-border-width: 1; " +
-                            "-fx-padding: 12;"
-            );
-            GridPane.setHgrow(card, javafx.scene.layout.Priority.ALWAYS);
-            GridPane.setVgrow(card, javafx.scene.layout.Priority.ALWAYS);
 
             Button btn = new Button(choice.getText());
             btn.setMaxWidth(Double.MAX_VALUE);
@@ -237,82 +157,153 @@ public class GameController {
             btn.getStyleClass().add("button");
             btn.setOnAction(e -> onChoiceSelected(scene, choice));
 
-            if (willFail) {
-                btn.setText(choice.getText() + "\n[⚠ Potrebbe fallire]");
-            }
+            VBox card = new VBox(6);
+            card.setMaxWidth(Double.MAX_VALUE);
+            card.setMaxHeight(Double.MAX_VALUE);
+            card.setStyle(
+                    "-fx-background-color: #021a02; " +
+                            "-fx-border-color:  #004d14;"+
+                            "-fx-border-width: 1; -fx-padding: 12;"
+            );
+            GridPane.setHgrow(card, javafx.scene.layout.Priority.ALWAYS);
+            GridPane.setVgrow(card, javafx.scene.layout.Priority.ALWAYS);
 
-            String woolong = choice.getOutcome().getWoolongSummary();
-            String summary = choice.getOutcome().getSummary();
-
-            VBox summaryBox = new VBox(2);
-            summaryBox.setStyle("-fx-padding: 4 0 0 4;");
-
-            if (!woolong.isBlank()) {
-                Label wLabel = new Label(woolong);
-                wLabel.setStyle("-fx-font-family: 'Courier New'; " +
-                        "-fx-font-size: 13px; -fx-text-fill: #ffb000;");
-                summaryBox.getChildren().add(wLabel);
-            }
-            if (!summary.isBlank()) {
-                Label sLabel = new Label(summary);
-                sLabel.setStyle("-fx-font-family: 'Courier New'; " +
-                        "-fx-font-size: 13px; -fx-text-fill: #00cc33;");
-                summaryBox.getChildren().add(sLabel);
-            }
-
-            card.getChildren().addAll(btn, summaryBox);
+            card.getChildren().addAll(btn, buildSummaryBox(choice.getOutcome()));
             grid.add(card, positions[i][0], positions[i][1]);
         }
 
         choicesBox.getChildren().add(grid);
     }
 
+    // ── Scelta selezionata ────────────────────────────────────────────────────
+
     private void onChoiceSelected(Scene scene, Choice choice) {
-        if (activeTimer != null) {
-            activeTimer.stop();
-            activeTimer = null;
-        }
+        stopTimer();
+
         boolean failed = choice.willFail(gameService.getSession());
         gameService.resolveScene(scene, choice);
 
-        // testo narrativo in base a successo/fallimento
-        String narrativeText = failed && choice.getOutcome().hasFailureOutcome()
-                ? choice.getOutcome().getFailureOutcome().getNarrativeText()
-                : choice.getOutcome().getNarrativeText();
+        Outcome outcome = failed && choice.getOutcome().hasFailureOutcome()
+                ? choice.getOutcome().getFailureOutcome()
+                : choice.getOutcome();
 
-        // reazione Marcus
-        String flag = choice.getOutcome().getFlagsToSet().entrySet().stream()
-                .map(e -> e.getKey() + "_" + e.getValue())
-                .findFirst().orElse("");
-        String marcusReaction = gameService.getSession().getMarcus().reactToChoice(flag);
+        String marcusReaction = gameService.getSession().getMarcus()
+                .reactToChoice(extractMainFlag(choice));
 
         String fullText = marcusReaction.isBlank()
-                ? narrativeText
-                : narrativeText + "\n\nMarcus: " + marcusReaction;
+                ? outcome.getNarrativeText()
+                : outcome.getNarrativeText() + "\n\nMarcus: " + marcusReaction;
 
         animateText(fullText);
-
         choicesBox.getChildren().clear();
         updateHUD();
 
         if (gameService.isGameOver()) {
-            showGameOver(narrativeText);
+            showGameOver(outcome.getNarrativeText());
             return;
         }
 
-        Button nextBtn = new Button("[ CONTINUA → ]"); // Racchiuderlo tra quadre aiuta lo stile!
-        nextBtn.setOnAction(e -> advance());
+        Button nextBtn = new Button("[ CONTINUA → ]");
         nextBtn.getStyleClass().add("button");
+        nextBtn.setOnAction(e -> advance());
         choicesBox.getChildren().add(nextBtn);
     }
 
-    private void advance() {
-        if (gameService.tryCompleteCurrentEpisode()) {
-            startNextEpisode();
-        } else {
-            showCurrentScene();
+    // ── UI helpers ────────────────────────────────────────────────────────────
+
+    private VBox buildChoiceContainer(Button btn, Outcome outcome) {
+        VBox container = new VBox(2);
+        container.setMaxWidth(Double.MAX_VALUE);
+        container.getChildren().add(btn);
+        container.getChildren().add(buildSummaryBox(outcome));
+        return container;
+    }
+
+    private VBox buildSummaryBox(Outcome outcome) {
+        VBox box = new VBox(2);
+        box.setStyle("-fx-padding: 0 0 6 10;");
+
+        String woolong = outcome.getWoolongSummary();
+        if (!woolong.isBlank()) {
+            Label lbl = new Label(woolong);
+            lbl.setStyle("-fx-font-family: 'Courier New'; -fx-font-size: 15px; " +
+                    "-fx-text-fill: #f0c040; -fx-font-weight: bold;");
+            box.getChildren().add(lbl);
         }
-        updateHUD();
+
+        String summary = outcome.getSummary();
+        if (!summary.isBlank()) {
+            for (String part : summary.split("\\s*\\|\\s*")) {
+                if (!part.isBlank()) {
+                    Label lbl = new Label(part);
+                    lbl.setStyle("-fx-font-family: 'Courier New'; -fx-font-size: 15px; " +
+                            "-fx-text-fill: #00cc33;");
+                    lbl.setWrapText(true);
+                    box.getChildren().add(lbl);
+                }
+            }
+        }
+
+        return box;
+    }
+
+    private void updateHUD() {
+        var session = gameService.getSession();
+        captainNameLabel.setText(session.getCaptain().getName());
+        woolongLabel.setText("₩ " + session.getFinance().getWoolong());
+        moraleLabel.setText("Morale: " + session.getCaptain().getMorale());
+    }
+
+    private void updateSceneVisuals(Scene scene) {
+        scene.getBackgroundSprite().ifPresent(path ->
+                loadImage(backgroundImage, path)
+        );
+
+        scene.getCharacterSprite().ifPresentOrElse(
+                path -> {
+                    loadImage(characterImage, path);
+                    characterPanel.setVisible(true);
+                    characterPanel.setManaged(true);
+                },
+                () -> {
+                    characterPanel.setVisible(false);
+                    characterPanel.setManaged(false);
+                }
+        );
+    }
+
+    private void animateText(String text) {
+        if (typewriterTimeline != null) typewriterTimeline.stop();
+        narrativeArea.setText("");
+        final int[] index = {0};
+
+        typewriterTimeline = new Timeline(new KeyFrame(Duration.millis(40), e -> {
+            if (index[0] < text.length()) {
+                narrativeArea.appendText(String.valueOf(text.charAt(index[0]++)));
+            } else {
+                typewriterTimeline.stop();
+            }
+        }));
+        typewriterTimeline.setCycleCount(text.length());
+        typewriterTimeline.play();
+    }
+
+    private void startTimer(Choice choice, Scene scene, Button btn) {
+        int[] remaining = {choice.getTimeoutSeconds()};
+        activeTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            remaining[0]--;
+            btn.setText(choice.getText() + " [" + remaining[0] + "s]");
+            if (remaining[0] <= 0) onChoiceSelected(scene, choice);
+        }));
+        activeTimer.setCycleCount(choice.getTimeoutSeconds());
+        activeTimer.play();
+    }
+
+    private void stopTimer() {
+        if (activeTimer != null) {
+            activeTimer.stop();
+            activeTimer = null;
+        }
     }
 
     private void showEnding() {
@@ -320,77 +311,20 @@ public class GameController {
                 SceneManager.switchToAndGetController(AppScene.ENDING);
         endingController.initEnding(gameService.getSession());
     }
-    private boolean isFinalScene(Scene scene) {
-        return scene.getId().equals("ep3_s3");
+
+    private void showGameOver(String reason) {
+        GameOverController controller =
+                SceneManager.switchToAndGetController(AppScene.GAME_OVER);
+        controller.initGameOver(reason, gameService.getSession());
     }
 
-    private static final Map<String, String> SCENE_CHARACTERS = Map.of(
-            "ep1_s1", "/sprites/characters/lena_facecard.png",
-            "ep1_s2", "/sprites/characters/lena_facecard.png",
-            "ep1_s3", "/sprites/characters/lena_facecard.png",
-            "ep2_s2", "/sprites/characters/nyx_facecard.png",
-            "ep2_s4", "/sprites/characters/nyx_facecard.png",
-            "ep3_s2", "/sprites/characters/kessler_facecard.png"
-    );
-
-    private static final Map<String, String> SCENE_BACKGROUNDS = Map.of(
-            "ep1_s1", "/sprites/background/ep1_bg.png",
-            "ep1_s2", "/sprites/background/ep1_bg.png",
-            "ep1_s3", "/sprites/background/ep1_bg.png",
-            "ep2_s1", "/sprites/background/ep2_bg.png",
-            "ep2_s2", "/sprites/background/ep2_bg.png",
-            "ep2_s3", "/sprites/background/ep2_bg.png",
-            "ep2_s4", "/sprites/background/ep2_bg.png",
-            "ep3_s1", "/sprites/background/ep3_bg.png",
-            "ep3_s2", "/sprites/background/ep3.1_bg.png"
-    );
-
-    private void updateSceneVisuals(Scene scene) {
-        // sfondo
-        String bgPath = SCENE_BACKGROUNDS.get(scene.getId());
-        if (bgPath != null) {
-            backgroundImage.setImage(new javafx.scene.image.Image(
-                    getClass().getResourceAsStream(bgPath)));
-        }
-
-        // facecard
-        String charPath = SCENE_CHARACTERS.get(scene.getId());
-        if (charPath != null) {
-            characterImage.setImage(new javafx.scene.image.Image(
-                    getClass().getResourceAsStream(charPath)));
-            characterPanel.setVisible(true);
-            characterPanel.setManaged(true);
-        } else {
-            characterPanel.setVisible(false);
-            characterPanel.setManaged(false);
-        }
+    private void loadImage(ImageView target, String path) {
+        SpriteLoader.load(target, path);
     }
 
-    private void animateText(String text) {
-        // Se c'era un'animazione precedente ancora in corso, la stoppiamo
-        if (typewriterTimeline != null) {
-            typewriterTimeline.stop();
-        }
-
-        // Svuotiamo l'area prima di iniziare
-        narrativeArea.setText("");
-
-        // Usiamo un array a elemento singolo per poter modificare l'indice dentro la Lambda
-        final int[] index = {0};
-
-        typewriterTimeline = new Timeline();
-
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(40), event -> {
-            if (index[0] < text.length()) {
-                narrativeArea.appendText(String.valueOf(text.charAt(index[0])));
-                index[0]++;
-            } else {
-                typewriterTimeline.stop();
-            }
-        });
-
-        typewriterTimeline.getKeyFrames().add(keyFrame);
-        typewriterTimeline.setCycleCount(text.length());
-        typewriterTimeline.play();
+    private String extractMainFlag(Choice choice) {
+        return choice.getOutcome().getFlagsToSet().entrySet().stream()
+                .map(e -> e.getKey() + "_" + e.getValue())
+                .findFirst().orElse("");
     }
 }

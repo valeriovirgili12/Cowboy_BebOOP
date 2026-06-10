@@ -1,8 +1,8 @@
 package it.unicam.cs.mpgc.rpg126421.model.episode;
 
-import it.unicam.cs.mpgc.rpg126421.model.episode.requirement.FlagRequirement;
-import it.unicam.cs.mpgc.rpg126421.model.episode.requirement.NyxLoyalRequirement;
+import it.unicam.cs.mpgc.rpg126421.model.episode.requirement.*;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
+import it.unicam.cs.mpgc.rpg126421.util.Sprites;
 
 import java.util.List;
 
@@ -10,29 +10,46 @@ import java.util.List;
  * Episodio 3 — "Last Call Signal"
  * La base nascosta della Helix Corporation.
  * Adrian Kessler. La verità su Aaron Morrow.
- * Quattro finali — sempre visibili, non sempre raggiungibili.
+ * Quattro finali — A e B sempre visibili, C e D mutuamente esclusivi.
  */
 public class EpisodeThree extends Episode {
+
 
     public EpisodeThree() {
         super("ep3", "Last Call Signal", buildScenes());
     }
 
     private static List<Scene> buildScenes() {
+        Choice continueS0 = new Choice.Builder(
+                "[ CONTINUA ]",
+                new Outcome.Builder()
+                        .narrative("")
+                        .build()
+        ).build();
+
+        Scene scene0 = new Scene(
+                "ep3_s0",
+                " .",
+                List.of(continueS0),
+                Sprites.MARCUS,
+                Sprites.BG_EP3
+        );
 
         // ── Scena 1 — Ingresso nella base ─────────────────────────────────────
-
         Choice infiltrate = new Choice.Builder(
                 "Entrate in silenzio. Nessun allarme.",
                 new Outcome.Builder()
                         .flag("ep3_entry", "stealth")
-                        .narrative(
-                                "I corridoi sono deserti. " +
-                                        "O qualcuno vuole che pensiate questo."
+                        .narrative("Scelta meno rischiosa - pensi\n"+
+                                "Vi fate strada nei corridoi, ancora nessuno\n"+
+                                "All'improvviso una porta con su scritto\n[SALA DI COMANDO]..."+
+                                "Siamo arrivati - dici\n"+
+                                "Marcus non parla.\n\n" + //Optional nyxLineS2 +
+                                "\"Entrate!\" - sentite provenire da dentro\n"+
+                                "Vi fate coraggio, fate due passi e..\n\n"
                         )
                         .build()
-        )
-                .logEntry("Entrati nella base Helix in silenzio.")
+        ).logEntry("Entrati nella base Helix in silenzio.")
                 .build();
 
         Choice forceEntry = new Choice.Builder(
@@ -40,14 +57,18 @@ public class EpisodeThree extends Episode {
                 new Outcome.Builder()
                         .morale(-5)
                         .flag("ep3_entry", "force")
-                        .narrative(
-                                "L'allarme scatta dopo trenta secondi. " +
-                                        "Abbastanza per essere dentro. " +
-                                        "Non abbastanza per essere al sicuro."
+                        .narrative("\"Se dobbiamo fare le cose, facciamole per bene\" - dici,"+
+                                "prima di sparare alla porta.\n"+
+                                "Ma quale effetto sorpresa? Sanno che stiamo arrivando - pensi.\n"+
+                                "Vi fate strada nei corridoi, ancora nessuno\n"+
+                                "All'improvviso una porta con su scritto:\n[SALA DI COMANDO]...\n"+
+                                "Siamo arrivati - dici\n"+
+                                "Marcus non parla.\n\n" + //Optional nyxLineS2 +
+                                "\"Entrate!\" - sentite provenire da dentro\n"+
+                                "Vi fate coraggio, fate due passi e..\n\n"
                         )
                         .build()
-        )
-                .logEntry("Entrati di forza. L'allarme è scattato.")
+        ).logEntry("Entrati di forza. L'allarme è scattato.")
                 .build();
 
         Choice nyxEntry = new Choice.Builder(
@@ -57,86 +78,86 @@ public class EpisodeThree extends Episode {
                         .trust("marcus", 5)
                         .flag("ep3_entry", "stealth")
                         .flag("ep3_nyx_contributed", "true")
-                        .narrative(
-                                "Nyx lavora in silenzio per quattro minuti. " +
-                                        "\"Siete dentro. Venti minuti prima che " +
-                                        "qualcuno si accorga di qualcosa.\" " +
-                                        "Marcus la guarda come se stesse rivalutando qualcosa."
+                        .narrative("Questa ragazza sa il fatto suo - pensi\n"+
+                        "Forse avrebbe fatto comodo come appoggio fuori di qui..."+
+                        "ma ormai è tardi, il dado è tratto.\n"+
+                                "Vi fate strada nei corridoi, ancora nessuno.\n"+
+                                        "All'improvviso una porta con su scritto:\n[SALA DI COMANDO]...\n"+
+                                        "Siamo arrivati - dici\n"+
+                                        "Marcus non parla.\n\n" + //Optional nyxLineS2 +
+                                        "\"Entrate!\" - sentite provenire da dentro\n"+
+                                        "Vi fate coraggio, fate due passi e..\n\n"
                         )
+
                         .build()
-        )
-                .requires(new FlagRequirement("recruitedNyx", "true"))
-                .logEntry("Nyx ha disabilitato i sistemi Helix. Venti minuti.")
+        ).requires(new FlagRequirement("recruitedNyx", "true"))
+                .logEntry("Nyx ha disabilitato i sistemi Helix.")
                 .build();
 
         Scene scene1 = new Scene(
                 "ep3_s1",
-                "La base è nascosta nell'ombra di un gate collassato " +
-                        "ai margini del sistema solare.\n\n" +
-                        "Nessuna targa. Nessun segnale ufficiale. " +
-                        "Solo antenne e silenzio.\n\n" +
-                        "Marcus: \"Aaron è arrivato fin qui. " +
-                        "Dieci anni fa. Non è mai tornato indietro.\"",
-                List.of(infiltrate, forceEntry, nyxEntry)
+                "Arrivati all'ingresso, c'è troppo silenzio.\n"+
+                "In giro non c'è un'anima.\n\n"+
+                "Che Kessler vi stia aspettando?",
+                List.of(infiltrate, forceEntry, nyxEntry),
+                null,
+                Sprites.BG_EP3
         );
 
         // ── Scena 2 — Kessler parla ───────────────────────────────────────────
-
         Choice listenToKessler = new Choice.Builder(
                 "Ascoltalo. Cosa offre esattamente?",
                 new Outcome.Builder()
                         .trust("marcus", -5)
                         .flag("ep3_listened_kessler", "true")
-                        .narrative(
-                                "Kessler parla con la calma di chi ha già vinto troppe volte. " +
-                                        "La Helix gestisce il sistema delle taglie da vent'anni. " +
-                                        "Crea criminali. Risolve i problemi che ha creato. " +
-                                        "Viene pagata due volte. " +
-                                        "\"Il sistema funziona,\" dice. " +
-                                        "\"Voi funzionate dentro al sistema. " +
-                                        "Questo non deve cambiare.\""
+                        .narrative("\"50.000 Woolong\" - esclama\n"+
+                                "\"Più uno stipendio fisso, per ogni lavoro che farete per me\"\n"+
+                                "Rimanete impassibili, perchè vuole offrirvi un accordo?\n"+
+                                "Siete davvero così scomodi?\n"+
+                                "\"La Helix gestisce il sistema delle taglie da vent'anni - continua\"\n"+
+                                "\"Noi plasmiamo i criminali, pubblichiamo la taglia, passiamo a riscuotere.\n"+
+                                "Questo sistema non può fallire, non può fermarsi.\n"+
+                                "Non combattete una guerra che non potete vincere.\n"+
+                                "Conosco le vostre abilità, sarete più utili da questa parte.\""
                         )
                         .build()
-        )
-                .logEntry("Kessler ha spiegato tutto. Vent'anni di bugie.")
+        ).logEntry("Kessler ha spiegato tutto. Vent'anni di bugie.")
                 .build();
 
         Choice askAboutAaron = new Choice.Builder(
-                "Aaron Morrow. Cosa gli è successo.",
+                "Aaron Morrow. Cosa gli è successo?",
                 new Outcome.Builder()
                         .morale(5)
                         .trust("marcus", 20)
                         .flag("ep3_asked_aaron", "true")
-                        .narrative(
-                                "Per la prima volta qualcosa cambia nell'espressione di Kessler. " +
-                                        "Non molto. Abbastanza. " +
-                                        "\"Morrow ha fatto una scelta,\" dice. \"Come tutti.\" " +
-                                        "Marcus stringe i pugni ma non si muove. " +
-                                        "Ci vuole più coraggio a restare fermi che a sparare."
-                        )
+                        .narrative("Kessler non si aspettava questa domanda.\n"+
+                                "Riflette per un po', poi esclama:"+
+                                "\"Morrow ha fatto una scelta!\"\n"+
+                                "\"E' andato oltre le sue competenze..."+
+                                "ha ficcato il naso nei posti sbagliati, ed ha avuto la fine che meritava\"\n"+
+                                "Ti giri, vedi Marcus: la sua espressione è cambiata, non dici niente\n"+
+                                "\"Offro 50.000 mila Woolong\" - continua Kessler\n" +
+                                "\"Lasciate stare questa storia, non sapete neanche a cosa andate incontro.\n"+
+                                "Gestiamo il sistema delle taglie da vent'anni,"+
+                                "non sarà un branco di mocciosi a farci fermare.\"")
                         .build()
-        )
-                .logEntry("Chiesto di Aaron Morrow. Kessler non ha negato niente.")
+        ).logEntry("Chiesto di Aaron Morrow. Kessler non ha negato niente.")
                 .build();
 
         Scene scene2 = new Scene(
                 "ep3_s2",
-                "Adrian Kessler vi aspetta nella sala centrale " +
-                        "come se foste ospiti attesi.\n\n" +
-                        "Capelli grigi, voce piatta, " +
-                        "occhi che calcolano tutto quello che guardano.\n\n" +
-                        "\"Benvenuti. Ho seguito il vostro percorso con interesse. " +
-                        "Siete arrivati fin qui — questo vi rende " +
-                        "più svegli della media. O più fortunati.\"\n\n" +
-                        "Marcus, piano, solo per te: " +
-                        "\"Dieci anni fa ho abbandonato questa indagine per paura. " +
-                        "Non lo farò di nuovo. Qualunque cosa tu decida.\"",
-                List.of(listenToKessler, askAboutAaron)
+                "Adrian Kessler è lì circondato dai suoi scagnozzi.\n"+
+                "\n\"Tempismo perfetto - dice - benvenuti, vi stavo aspettando!\"\n"+
+                "Allora? Cosa vi porta qui? - chiede, come se già non lo sapesse.",
+
+                List.of(listenToKessler, askAboutAaron),
+                Sprites.KESSLER,
+                Sprites.BG_EP3_1
         );
 
         // ── Scena 3 — I quattro finali ────────────────────────────────────────
 
-        // ── FINALE A — Accetta l'accordo (sempre disponibile, sempre funziona)
+        // ── FINALE A — Accetta l'accordo (sempre disponibile, non fallisce mai)
         Choice acceptDeal = new Choice.Builder(
                 "Accetta l'accordo. Lavorate per Helix.",
                 new Outcome.Builder()
@@ -144,167 +165,327 @@ public class EpisodeThree extends Episode {
                         .morale(-30)
                         .trust("marcus", -40)
                         .flag("finale", "deal")
-                        .narrative(
-                                "Kessler sorride per la prima volta. " +
-                                        "Un sorriso piccolo, preciso. \"Scelta saggia.\"\n\n" +
-                                        "Marcus esce dalla stanza senza guardarti. " +
-                                        "La Blue Mantis riparte con il serbatoio pieno " +
-                                        "e qualcosa di rotto che non si vede dall'esterno."
+                        .narrative("\"Accettiamo\" - dici, quasi a bassa voce, quasi te ne vergoni. \n"+
+                        "Sono tanti soldi, pensi. Cibo, carburante...nella vita, bisogna scendere a compromessi.\n"+
+                        "\"Sapevo avresti scelto così, addio\"\n"+
+                        "Realizzi, ti giri, Marcus è nel corridoio\n"+
+                        "\"Il mondo gira per soldi e per amore\" - dice Kessler, mentre ride di gusto\n"+
+                        "\"Suvvia, te ne farai una ragione\"\n"+
+                        "In questo universo, i soldi sono tutto - pensi, per consolarti.\n"+
+                                        "Hai perso un compagno fidato.\n" +
+                                "Ne è valsa davvero la pena?"
                         )
                         .build()
-        )
-                .logEntry("Accettato l'accordo con Kessler. Quindici mila woolong.")
+        ).logEntry("Accettato l'accordo con Kessler.")
                 .keyChoice()
                 .build();
 
-        // ── FINALE B — Consegna Kessler
-        // Funziona se Marcus trust alto. Fallisce se basso → tradimento.
-        Choice deliverKessler = new Choice.Builder(
-                "Consegna Kessler all'ISSP.",
+        // ── FINALE B — Uccidi Kessler
+        // failsIf 1: no pistola → Marcus muore proteggendo il player
+        // failsIf 2: trust basso → Marcus tentenna → player muore
+        Choice killKessler = new Choice.Builder(
+                "Uccidi Kessler. Finisce qui.",
                 new Outcome.Builder()
-                        .woolong(5000)
+                        .woolong(0)
+                        .morale(10)
+                        .trust("marcus", 20)
+                        .flag("finale", "killed")
+                        .narrative("Quando li riapri esclami:"+
+                                "\"Sai una cosa, Kessler? No? Nemmeno io.\" \n"+
+                                "Estrai la pistola\n"+
+                                "Premi il grilletto. \n"+
+                                "Il colpo interrompe il suo sorriso a metà. \n"+
+                                "Kessler crolla all'indietro come una marionetta a cui hanno tagliato i fili. \n"+
+                                "\"Non cambi mai.\"- dice Marcus mentre è già in movimento.\n"+
+                                "Le guardie reagiscono, lui le tiene occupate quel tanto che basta. \n"+
+                                "Correte tra allarmi, fumo e luci rosse intermittenti. \n"+
+                                "Per una volta, la fortuna decide di offrirvi un passaggio gratuito.\n "+
+                                "Quando l'aria della notte vi colpisce il volto, siete ancora vivi. \n"+
+                                "Non è una vittoria pulita."+
+                                "Ma nell'universo nessuno regala finali puliti."
+                        )
+                        .onFailure(new Outcome.Builder()
+                                .woolong(0)
+                                .morale(-30)
+                                .flag("finale", "failed_kill_nopistol")
+                                .gameOver()
+                                .narrative("Quando li riapri esclami:"+
+                                        "\"Sai una cosa, Kessler? No? Nemmeno io.\" \n"+
+                                        "Porti la mano alla fondina. \n"+
+                                        "Vuota. Certo.\n"+
+                                        "Non hai mai comprato quella pistola. \n"+
+                                        "Per un istante il tempo si ferma. \n"+
+                                        "Marcus capisce immediatamente. \n"+
+                                        "\"Aspetta!\" \n"+
+                                        "Si lancia verso di te senza pensarci due volte. \n"+
+                                        "Le guardie invece pensano eccome."+
+                                        "E sparano. \n"+
+                                        "Il rumore dei colpi copre tutto il resto. "+
+                                        "Marcus ti spinge via dalla traiettoria. \n"+
+                                        "Uno, due, tre impatti. \n"+
+                                        "Troppi. \n"+
+                                        "\"Ehi... capo...\" "+
+                                        "Sorride, come se volesse alleggerire la situazione. \n"+
+                                        "\"La prossima volta compra l'equipaggiamento completo.\" \n\n"+
+                                        "Poi non dice più niente."
+                                )
+                                .build()
+                        )
+                        .onFailure2(new Outcome.Builder()
+                                .woolong(0)
+                                .morale(-30)
+                                .flag("finale", "failed_kill_notrust")
+                                .gameOver()
+                                .narrative("Kessler sorride. \n"+
+                                        "Quel sorriso da uomo convinto che tutti abbiano un prezzo. \n"+
+                                        "Forse ha ragione. "+
+                                        "Forse è proprio questo il problema. "+
+                                        "Stringi la mano sulla pistola. "+
+                                        "È il momento.\n "+
+                                        "La estrai e la punti verso di lui.\n "+
+                                        "Poi, con la coda dell'occhio, vedi Marcus.\n "+
+                                        "Non è sorpreso. "+
+                                        "Non è spaventato. "+
+                                        "È deluso. \n"+
+                                        "Una stanchezza silenziosa gli attraversa lo sguardo. \n"+
+                                        "Come se avesse appena capito chi sei davvero.\n "+
+                                        "Come se lo sapesse da tempo e sperasse di sbagliarsi.\n "+
+                                        "\"Marcus io...\" - dici\n"+
+                                        "Troppo tardi. "+
+                                        "Lui non si muove. \n"+
+                                        "Non ti coprirà. "+
+                                        "Non questa volta. \n"+
+                                        "Le guardie reagiscono prima che tu possa fare qualunque altra cosa. \n"+
+                                        "Il mondo diventa un lampo bianco. \n"+
+                                        "Poi solo buio.\n "+
+                                        "Da qualche parte, molto lontano, un vecchio pezzo jazz continua a suonare. "
+                                )
+                                .build()
+                        )
+                        .build()
+        ).failsIf(new PistolRequirement())
+                .failsIf(new MarcusTrustRequirement())
+                .keyChoice()
+                .build();
+
+        // ── FINALE C — Distruggi Helix
+        // requires: Nyx reclutata
+        // failsIf: no lenaPassword → accesso fallisce
+        Choice destroyHelix = new Choice.Builder(
+                "Distruggi l'infrastruttura Helix dall'interno.",
+                new Outcome.Builder()
+                        .woolong(0)
                         .morale(20)
-                        .trust("marcus", 25)
-                        .flag("finale", "delivered")
-                        .narrative(
-                                "Kessler viene portato via. Calmo, come sempre. " +
-                                        "\"Sarò fuori in sei mesi.\" Forse ha ragione. " +
-                                        "Marcus lo guarda andare. " +
-                                        "\"Almeno ci abbiamo provato.\" " +
-                                        "È abbastanza. Per ora."
+                        .trust("marcus", 15)
+                        .flag("finale", "destroyed")
+                        .narrative( "Nyx è già sparita da un pezzo. \n "+
+                                "Nessuno l'ha vista infilarsi nei livelli più profondi della struttura.\n "+
+                                "È il suo talento migliore: esserci senza esserci. \n"+
+                                "Passano pochi secondi. "+
+                                "Poi tutti gli schermi della sala di comando si spengono.\n "+
+                                "Uno dopo l'altro Come stelle che decidono di abbandonare il cielo.\n"+
+                                "\"Che cosa...\"-Kessler, incredulo\n "+
+                                "Gli allarmi esplodono in ogni corridoio della struttura. \n"+
+                                "Luci rosse. Sirene. Panico. \n"+
+                                "Vent'anni di dati, backup, archivi e segreti iniziano a dissolversi nel nulla digitale. \n"+
+                                "\"Ecco qual'era il piano.\" dice Marcus, con un sorriso che non gli vedevi da tempo. \n"+
+                                "\"Andiamo.\" \n"+
+                                "Correte attraverso il caos. "+
+                                "Guardie ovunque. \n"+
+                                "Qualche colpo sparato senza troppa precisione. "+ "Qualche porta forzata. "+ "Qualche miracolo statistico. \n"+
+                                "A metà strada incrociate Nyx, che emerge da una nube di fumo con l'aria di chi ha appena cancellato una cartella per sbaglio. \n"+
+                                "Quando raggiungete l'esterno, dietro di voi resta soltanto una fortezza in agonia. "+
+                                "Helix è morta. \n"+
+                                "Vent'anni di lavoro svaniti in una notte. \n"+
+                                "Per la prima volta dopo molto tempo, il futuro non appartiene più a Kessler."
                         )
                         .onFailure(new Outcome.Builder()
                                 .woolong(0)
                                 .morale(-20)
-                                .trust("marcus", -30)
-                                .flag("finale", "betrayed")
-                                .gameOver()
-                                .narrative(
-                                        "Marcus si blocca. " +
-                                                "Un secondo. Due. " +
-                                                "Kessler lo legge prima che tu possa fare qualcosa.\n\n" +
-                                                "\"Lei ha dubbi,\" dice Kessler. " +
-                                                "\"Li vedo da qui.\"\n\n" +
-                                                "Kessler scappa. Marcus non ti guarda. " +
-                                                "Forse non ti guarderà mai più.\n\n" +
-                                                "GAME OVER — La fiducia di Marcus non era abbastanza."
-                                )
-                                .build()
-                        )
-                        .build()
-        )
-                .failsIf(new it.unicam.cs.mpgc.rpg126421.model.episode.requirement
-                        .MarcusTrustRequirement())
-                .logEntry("Kessler consegnato all'ISSP.")
-                .keyChoice()
-                .build();
-
-        // ── FINALE C — Distruggi i server
-        // Richiede Nyx reclutata e leale. Senza → game over.
-        Choice destroyServers = new Choice.Builder(
-                "Distruggi i server Helix. Brucia tutto.",
-                new Outcome.Builder()
-                        .woolong(0)
-                        .morale(15)
-                        .trust("marcus", 10)
-                        .flag("finale", "destroyed")
-                        .narrative(
-                                "Nyx lavora veloce. Troppo veloce " +
-                                        "per qualcuno che non l'ha già fatto prima. " +
-                                        "I server vanno giù uno a uno. " +
-                                        "Nessuna prova. Nessun processo. " +
-                                        "Ma la macchina si è fermata. Per quanto, non si sa."
-                        )
-                        .onFailure(new Outcome.Builder()
-                                .woolong(0)
-                                .morale(-25)
                                 .flag("finale", "failed_destroy")
                                 .gameOver()
-                                .narrative(
-                                        "Non sapete dove colpire. " +
-                                                "I sistemi Helix sono troppo complessi " +
-                                                "senza qualcuno che li conosca dall'interno.\n\n" +
-                                                "La sicurezza vi blocca prima che " +
-                                                "arriviate ai server principali.\n\n" +
-                                                "GAME OVER — Serviva Nyx, leale e pronta."
+                                .narrative("Il piano era semplice. "+
+                                        "Forse troppo semplice. \n"+
+                                        "Partono tutti gli allarmi. "+
+                                        "Le sirene riempiono la struttura. \n"+
+                                        "Gli schermi restano accesi. "+
+                                        "I server continuano a funzionare. \n"+
+                                        "Helix continua a respirare. "+
+                                        "Kessler osserva i monitor per qualche secondo. \n"+
+                                        "Poi ride. \n"+
+                                        "\"Oh, non aveva la password, vero?\" \n"+
+                                        "La porta della sala si apre. "+
+                                        "Due guardie trascinano Nyx all'interno in manette. \n"+
+                                        "La buttano a terra senza troppa delicatezza. \n"+
+                                        "Lei prova a rialzarsi, ma una guardia la costringe di nuovo in ginocchio. "+
+                                        "\"Mi dispiace.\" \n"+
+                                        "È l'unica cosa che riesce a dire. \n"+
+                                        "Kessler si avvicina e la osserva come si osserva un bug fastidioso sullo schermo. "+
+                                        "\"Portatela via.\" \n"+
+                                        "Le guardie la trascinano fuori dalla stanza. \n"+
+                                        "\"Consideratelo un avvertimento.\" \n"+
+                                        "\"Non avvicinatevi più a Helix.\" \n"+
+                                        "\"La prossima volta sarà l'ultima.\" \n"+
+                                        "Per una volta, nessuno ride. "
                                 )
                                 .build()
                         )
                         .build()
-        )
-                .failsIf(new NyxLoyalRequirement())
-                .logEntry("Tentata la distruzione dei server Helix.")
+        ).requires(new FlagRequirement("recruitedNyx", "true"))
+                .failsIf(new LenaPasswordRequirement())
                 .keyChoice()
                 .build();
 
-        // ── FINALE D — Trasmetti tutto (finale raro)
-        // Richiede: Lena salvata + Marcus trust alto + Nyx NON reclutata.
-        // Senza requisiti → Kessler smonta tutto davanti a te.
-        Choice broadcastAll = new Choice.Builder(
-                "Trasmetti tutto.Il sistema deve sapere.",
+        // ── FINALE D — Broadcast dati
+        // requires: Nyx NON reclutata
+        // failsIf: no marketArchive → prove insufficienti
+        Choice broadcastData = new Choice.Builder(
+                "Trasmetti tutto. Che il sistema sappia.",
                 new Outcome.Builder()
                         .woolong(-2000)
                         .morale(40)
                         .trust("marcus", 35)
                         .flag("finale", "broadcast")
-                        .narrative(
-                                "Il segnale parte da ogni antenna della base. " +
-                                        "I dati di Helix — vent'anni di manipolazioni, " +
-                                        "taglie false, persone distrutte — " +
-                                        "sono su ogni frequenza del sistema solare. " +
-                                        "Non si ferma quello che è già ovunque.\n\n" +
-                                        "Marcus guarda lo schermo senza parlare. " +
-                                        "Poi, piano: \"Aaron avrebbe voluto vederlo. " +
-                                        "Tutto quanto.\"\n\n" +
-                                        "Kessler è ancora in piedi dall'altra parte della stanza. " +
-                                        "Per la prima volta non ha niente da dire."
-                        )
+                        .narrative("Kessler aspetta la tua risposta,"+
+                                "con la sicurezza di chi non ha mai dovuto affrontare le conseguenze delle proprie azioni. \n"+
+                                "\"No.\" \n"+
+                                "Kessler sospira, poi: \n"+
+                                "\"Sempre la scelta sbagliata. Prendeteli.\" - girandosi verso le guardie \n"+
+                                "E' il momento, premi il trasmettitore. \n"+
+                                "Per un secondo non succede nulla. \n"+
+                                "Poi tutti gli schermi della sala di comando cambiano immagine. \n"+
+                                "Compare un notiziario. "+
+                                "La conduttrice ha l'espressione di chi ha appena ricevuto la storia del secolo. \n"+
+                                "Documenti. Registrazioni. Conti nascosti. \n"+
+                                "Ogni segreto di Helix viene riversato in diretta universale, davanti a miliardi di persone. \n"+
+                                "Da qualche parte, fuori dalla struttura, Nyx sorride davanti a una console portatile. \n"+
+                                "Non è mai entrata nell'edificio. \n"+
+                                "Non ne aveva bisogno, vi doveva un favore \n"+
+                                "Kessler guarda gli schermi, in silenzio" +
+                                "Le sue bugie non appartengono più a lui. "+
+                                "Ormai appartengono al mondo. \n"+
+                                "Marcus ride piano: "+
+                                "\"Sai una cosa?\" "+
+                                "\"Questa me la voglio riguardare.\" \n"+
+                                "Non avete guadagnato un solo woolong. \n"+
+                                "Non avete comprato una nave nuova. \n"+
+                                "Non avete salvato il mondo. \n"+
+                                "Ma avete impedito che qualcuno continuasse a venderlo a pezzi. \n"+
+                                "La verità è venuta a galla. Anche per Aaron.\n"+
+                                "Per una volta, è abbastanza.")
                         .onFailure(new Outcome.Builder()
                                 .woolong(0)
                                 .morale(-15)
-                                .trust("marcus", -10)
                                 .flag("finale", "failed_broadcast")
-                                .narrative(
-                                        "Kessler guarda lo schermo e ride. " +
-                                                "Freddo, controllato.\n\n" +
-                                                "\"Quelli sono file fabbricati. " +
-                                                "Li ho preparati io stesso, " +
-                                                "per un'eventualità come questa. " +
-                                                "Nemmeno i giornalisti abboccano " +
-                                                "più a roba così.\"\n\n" +
-                                                "La trasmissione non cambia niente. " +
-                                                "Helix sopravvive. " +
-                                                "Voi anche — ma è difficile " +
-                                                "chiamarla una vittoria."
-                                )
+                                .narrative("\"Abbiamo le prove.\" \n"+
+                                        "La tua voce riecheggia nella sala di comando. \n"+
+                                        "\"L'Operazione Black Dusk.\" "+
+                                        "\"Il Progetto Chimera.\" \n"+
+                                        "\"Le transazioni fantasma nelle colonie esterne.\" "+
+                                        "\"Abbiamo visto tutto.\" \n"+
+                                        "Kessler ti osserva in silenzio. "+
+                                        "Marcus ti osserva in silenzio. \n"+
+                                        "Persino le guardie sembrano curiose di sentire la risposta. \n"+
+                                        "Poi scoppia a ridere. "+
+                                        "Non una risata nervosa. "+
+                                        "Una risata sincera. Divertita. \n"+
+                                        "\"Oh, è meraviglioso.\" \n"+
+                                        "\"Ci siete cascati davvero.\" \n"+
+                                        "Il sorriso non gli abbandona il volto. \n"+
+                                        "\"Quei dati li ho fatti circolare io - tutti falsi.\" "+
+                                        "\"Tutti contraffatti.\" \n"+
+                                        "\"Una rete di esche per capire chi stava scavando troppo a fondo.\" \n"+
+                                        "Il sangue ti si gela nelle vene. "+
+                                        "Marcus abbassa lo sguardo. \n"+
+                                        "Ora capisci perché alcune cose non tornavano. "+
+                                        "Troppo facili da trovare. \n"+
+                                        "Troppo perfette. Troppo scandalose. \n"+
+                                        "\"Francamente non pensavo foste così inesperti da crederci.\" \n"+
+                                        "Le guardie chiudono il cerchio intorno a voi. \n"+
+                                        "Armi puntate. "+
+                                        "Nessuna via di fuga. \n"+
+                                        "Nessun colpo di scena. "+
+                                        "Nessuna trasmissione. "+
+                                        "Nessuna verità.\n "+
+                                        "Kessler si sistema il colletto della giacca. \n"+
+                                        "\"Avreste potuto andarvene ricchi, avete preferito fare gli eroi.\" \n"+
+                                        "Fa una pausa. \n"+
+                                        "\"È andata male.\"")
                                 .build()
                         )
                         .build()
-        )
-                .failsIf(new it.unicam.cs.mpgc.rpg126421.model.episode.requirement
-                        .BroadcastRequirement())
-                .logEntry("Tentata la trasmissione dei dati Helix.")
+        ).requires(new FlagRequirement("recruitedNyx", "false"))
+                .failsIf(new MarketArchiveRequirement())
                 .keyChoice()
                 .build();
 
         Scene scene3 = new Scene(
                 "ep3_s3",
-                "Kessler aspetta la tua risposta.\n\n" +
-                        "Marcus aspetta la tua risposta.\n\n" +
-                        "Forse anche tu stai aspettando qualcosa — " +
-                        "una certezza, un segno, una ragione abbastanza buona " +
-                        "da sembrare giusta.\n\n" +
-                        "Non arriverà. " +
-                        "Le ragioni buone non arrivano mai prima delle scelte difficili. " +
-                        "Solo dopo. Se va bene.",
-                List.of(acceptDeal, deliverKessler, destroyServers, broadcastAll)
+                "Tutto un tratto, silenzio.\n"+
+                "Hai lo sguardo perso nel vuoto, ti si sfoca la vista.\n"+
+                "La testa ti sta esplodendo.\n"+
+                "Passano 10 secondi, sembrano un'eternità\n"+
+                "Nel mentre inizi a pensare: non sono pochi.. ma Marcus?\n"+
+                "Lui non me lo perdonerebbe mai.\n"+
+                "E Nyx? E' nella sala dei server ma, sa cosa sta facendo?\n"+
+                "Cosa faccio? Morrow si è sacrificato per nulla?\n"+
+                "Ha una bella faccia tosta questo, che faccio? Sparo?\n"+
+                "E Lena? Cosa sapeva?\nCosa sappiamo noi veramente?\n"+
+                "Poi chiudi gli occhi, calma piatta\n"+
+                "Sai quello che devi fare.\n\n\n"+
+                        "[SCELTA FINALE]: alcune scelte potrebbero fallire a causa di scelte sbagliate durante la run"
+
+                ,
+                List.of(acceptDeal, killKessler, destroyHelix, broadcastData),
+                null,
+                Sprites.BG_EP3_1,
+                true
         );
 
-        return List.of(scene1, scene2, scene3);
+        return List.of(scene0, scene1, scene2, scene3);
     }
 
     @Override
     public void initialize(GameSession session) {
-        // Logica contestuale futura
+        boolean nyxPresent = "true".equals(
+                session.getWorldState().getFlag("recruitedNyx")
+        );
+
+        String nyxLineS2 = nyxPresent ? "Nyx... \"dov'è andata quella?\" \n" +
+                "\"Ha un piano\" dice Marcus\n" +
+                "\"Come un piano? Ma possibile che sono sempre l'ultimo a sapere le-\n"+
+                "Mentre stai parlando, la porta si apre da sola.\n"
+                : "\"Finalmente ci siamo,\"+" +
+                "\"comunque andrà, sappi che-\"\n mentre stai parlando, la porta si apre";
+
+        String nyxLineS1 = nyxPresent
+                ? "Nyx controlla i sistemi in silenzio.\n" +
+                "Non dice niente. Non ne ha bisogno.\n\n"
+                : "Siete in due. Come sempre.\n\n";
+
+        getScenes().get(0).setNarrativeText(
+                "BASE HELIX — aGATE COLLASSATO, MARGINI DEL SISTEMA SOLARE\n\n" +
+                        "Nessuna targa. Nessun segnale ufficiale.\n" +
+                        "Solo antenne e silenzio e il rumore della Blue Mantis\n" +
+                        "che attracca in un posto dove non dovrebbe essere.\n\n" +
+                        "Marcus è in piedi dietro di te.\n" +
+                        "\"Aaron è arrivato fin qui,\" dice.\n" +
+                        "\"Dieci anni fa. Non è mai tornato indietro.\n" +
+                        "Io mi sono fermato prima. Per paura.\"\n" +
+                        "Una pausa. \"Non lo farò di nuovo.\"\n\n" +
+                        nyxLineS1 +
+                        "Adrian Kessler vi aspetta dentro.\n" +
+                        "Lo sa già che siete qui.\n" +
+                        "Probabilmente lo sapeva prima di voi."
+        );
+        getScenes().get(2).setNarrativeText(
+                "Siamo arrivati - dici.\n"+
+                        "Marcus non parla.\n" + nyxLineS2 +
+                        "\"Entrate!\" - sentite provenire da dentro\n"+
+                        "Vi fate coraggio, fate due passi e..\n\n"+
+                        "Adrian Kessler è lì circondato dai suoi scagnozzi"+
+                        "\"Tempismo perfetto - dice - benvenuti, vi stavo aspettando\"\n"+
+                        "Allora? Cosa vi porta qui? - chiede, come se già non lo sapesse."
+        );
     }
 }

@@ -1,11 +1,9 @@
 package it.unicam.cs.mpgc.rpg126421.model.episode;
 
 import it.unicam.cs.mpgc.rpg126421.model.episode.requirement.CrewClassRequirement;
-import it.unicam.cs.mpgc.rpg126421.model.episode.requirement.FlagRequirement;
-import it.unicam.cs.mpgc.rpg126421.model.episode.requirement.WoolongRequirement;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
 import it.unicam.cs.mpgc.rpg126421.model.shared.CaptainClass;
-import it.unicam.cs.mpgc.rpg126421.model.shared.CrewClass;
+import it.unicam.cs.mpgc.rpg126421.util.Sprites;
 
 import java.util.List;
 
@@ -22,10 +20,37 @@ public class EpisodeTwo extends Episode {
 
     private static List<Scene> buildScenes() {
 
+        Choice continueS0 = new Choice.Builder(
+                "[ CONTINUA ]",
+                new Outcome.Builder()
+                        .narrative("")
+                        .build()
+        ).build();
+
+        Scene scene0 = new Scene(
+                "ep2_s0",
+                "BLUE MANTIS — ROTTA PER EUROPA\n\n" +
+                        "Quello che è successo su Io pesa ancora.\n" +
+                        "Marcus non ha detto molto da quando avete lasciato la stazione.\n\n" +
+                        "Il nome Helix Corporation è comparso nei dati di Lena.\n" +
+                        "Un'azienda che gestisce sicurezza, taglie, intelligenza artificiale.\n" +
+                        "Almeno in superficie.\n\n" +
+                        "Marcus conosce quel nome.\n" +
+                        "Dieci anni fa stava indagando su di loro\n" +
+                        "quando il suo partner — Aaron Morrow — è sparito.\n" +
+                        "Nessuna traccia. Nessuna spiegazione.\n" +
+                        "Marcus ha smesso di cercare. Non sa ancora perché.\n\n" +
+                        "Europa. Porto commerciale, livello basso.\n" +
+                        "Qualcuno qui sa qualcosa.\n" +
+                        "Lo sentite entrambi.",
+                List.of(continueS0),
+                Sprites.MARCUS,
+                Sprites.BG_EP2
+        );
         // ── Scena 1 — Arrivo a Europa ─────────────────────────────────────────
 
         Choice investigateStation = new Choice.Builder(
-                "Gira per la stazione. Qualcuno sa qualcosa.",
+                "Gira per la stazione. Qualcuno saprà qualcosa.",
                 new Outcome.Builder()
                         .woolong(0)
                         .morale(0)
@@ -54,7 +79,7 @@ public class EpisodeTwo extends Episode {
                                         "una storia interessante. " +
                                         "Pagamenti regolari verso conti anonimi. " +
                                         "Tutti con lo stesso prefisso: HLX. " +
-                                        "E un nome ricorrente nei manifesti di carico: Nyx."
+                                        "E un nome ricorrente nei manifesti di carico: Kessler."
                         )
                         .build()
         )
@@ -64,29 +89,30 @@ public class EpisodeTwo extends Episode {
 
         Scene scene1 = new Scene(
                 "ep2_s1",
-                "Europa. Porto commerciale, livello basso.\n\n" +
                         "L'aria sa di ozono bruciato e transazioni illegali. " +
                         "Marcus cammina dietro di te con le mani in tasca, " +
                         "gli occhi che si muovono troppo velocemente per sembrare tranquillo.\n\n" +
                         "\"Helix ha qualcosa qui,\" dice. " +
                         "\"Lo sento. È lo stesso odore di dieci anni fa.\"",
-                List.of(investigateStation, hackTerminals)
+                List.of(investigateStation, hackTerminals),
+                null,
+                Sprites.BG_EP2
         );
 
         // ── Scena 2 — L'incontro con Nyx ─────────────────────────────────────
 
         Choice talkToNyx = new Choice.Builder(
-                "Siediti. Cosa vuoi in cambio?",
+                "Siediti. Cosa vuole in cambio?",
                 new Outcome.Builder()
                         .woolong(0)
                         .morale(5)
-                        .trust("marcus", -5)
+                        .trust("marcus", -10)
                         .flag("ep2_talked_nyx", "true")
                         .narrative(
                                 "Nyx non gira intorno alle cose. " +
                                         "Conosce la struttura locale della Helix Corporation. " +
                                         "Sa dove sono i server, chi comanda, come entrarci. " +
-                                        "In cambio vuole protezione — qualcuno l'ha messa nel mirino. " +
+                                        "In cambio vuole protezione: qualcuno l'ha messa nel mirino. " +
                                         "Marcus non sembra convinto."
                         )
                         .build()
@@ -95,7 +121,7 @@ public class EpisodeTwo extends Episode {
                 .build();
 
         Choice interrogateNyx = new Choice.Builder(
-                "[GUNSLINGER] Spinala al muro. Chi lavora per chi?",
+                "Taglia corto. Non hai tempo per i giochi",
                 new Outcome.Builder()
                         .woolong(0)
                         .morale(-10)
@@ -103,53 +129,58 @@ public class EpisodeTwo extends Episode {
                         .flag("ep2_talked_nyx", "true")
                         .flag("ep2_intimidated_nyx", "true")
                         .narrative(
-                                "Nyx non si spaventa facilmente. " +
-                                        "Ma parla lo stesso — forse perché sa che " +
-                                        "non ha molte alternative. " +
+                                "Nyx non si spaventa facilmente ma," +
+                                        " una volta contro il muro,le conviene parlare. \n"+
+                                        "Forse perché sa che non ha molte alternative. " +
                                         "Le informazioni sono le stesse. " +
                                         "La fiducia, meno."
                         )
                         .build()
         )
-                .requires(new CrewClassRequirement(CaptainClass.GUNSLINGER))
                 .logEntry("Nyx ha parlato. Non di sua spontanea volontà.")
                 .build();
 
         Scene scene2 = new Scene(
                 "ep2_s2",
-                "Nyx ti aspetta a un tavolo in fondo al bar. " +
-                        "Come se sapesse che saresti venuto.\n\n" +
+                "Nyx vi aspetta a un tavolo in fondo al bar. " +
+                        "Come se sapesse che sareste arrivati.\n\n" +
                         "Acconciatura quantomeno particolare, felpa consumata, sguardo innocente.\n\n" +
                         "\"So chi siete,\" dice. " +
                         "\"E so cosa state cercando. " +
                         "Possiamo aiutarci a vicenda, o possiamo fare finta " +
                         "di non esserci mai incontrati. " +
                         "A voi la scelta.\"",
-                List.of(talkToNyx, interrogateNyx)
+                List.of(talkToNyx, interrogateNyx),
+                Sprites.NYX,
+                Sprites.BG_EP2
         );
 
         // ── Scena 3 — L'attacco Helix ─────────────────────────────────────────
 
         Choice fightBack = new Choice.Builder(
-                "Tieni la posizione. Non si passa.",
+                "[GUNSLINGER] Tieni la posizione. Non si passa.",
                 new Outcome.Builder()
                         .woolong(0)
-                        .morale(5)
-                        .trust("marcus", 10)
+                        .morale(10)
+                        .trust("marcus", 5)
                         .flag("ep2_survived_attack", "true")
+                        .flag("ep2_protected_nyx", "true")
                         .narrative(
-                                "Gli agenti Helix non si aspettavano resistenza. " +
-                                        "O forse sì, e non gliene importava. " +
-                                        "In ogni caso, la stazione è di nuovo silenziosa. " +
-                                        "Per ora."
+                                "Chi spara per primo spara due volte, diceva qualcuno. " +
+                                        "Hai sempre avuto il grilletto facile\n" +
+                                        "Gli agenti Helix a terra: sono venuti per voi o per lei? \n" +
+                                        "Ovviamente non intendono rispondere" +
+                                        "\"Marcus\": è ora di tornare.\n" +
+                                        "Annuisci."
                         )
                         .build()
         )
+                .requires(new CrewClassRequirement(CaptainClass.GUNSLINGER))
                 .logEntry("Tenuta la posizione durante l'attacco Helix.")
                 .build();
 
         Choice escapeWithNyx = new Choice.Builder(
-                "Porta Nyx fuori di qui. Prima che arrivino altri.",
+                "Porta Nyx fuori di qui, prima che ne arrivino altri.",
                 new Outcome.Builder()
                         .woolong(0)
                         .morale(0)
@@ -170,12 +201,15 @@ public class EpisodeTwo extends Episode {
 
         Scene scene3 = new Scene(
                 "ep2_s3",
-                "Il suono arriva prima delle persone — " +
+                "All'improvviso senti dei passi in lontananza: " +
                         "scariche elettriche, stivali sul metallo.\n\n" +
                         "Agenti Helix. Almeno quattro. " +
                         "Cercano Nyx, ma a quest'ora non fanno distinzioni.\n\n" +
-                        "Marcus: \"Sapevo che sarebbe andata così.\"",
-                List.of(fightBack, escapeWithNyx)
+                        "Marcus: \"Sapevo che sarebbe andata così.\"\n\n"+
+                        "Nyx: \"Sono arrivati.\"",
+                List.of(fightBack, escapeWithNyx),
+                null,
+                Sprites.BG_EP2
         );
 
         // ── Scena 4 — Reclutare Nyx (scelta chiave) ──────────────────────────
@@ -201,7 +235,7 @@ public class EpisodeTwo extends Episode {
                 .build();
 
         Choice rejectNyx = new Choice.Builder(
-                "Ognuno per la sua strada. Non è affar nostro.",
+                "Non ci servi sulla nave. Ci servi fuori",
                 new Outcome.Builder()
                         .woolong(0)
                         .morale(-5)
@@ -209,9 +243,8 @@ public class EpisodeTwo extends Episode {
                         .flag("recruitedNyx", "false")
                         .narrative(
                                 "Nyx annuisce come se se lo aspettasse. " +
-                                        "\"Se cambiate idea,\" dice, " +
+                                        "\"Vi devo un favore,\" dice, " +
                                         "\"sapete dove trovarmi. " +
-                                        "Per un po', almeno.\" " +
                                         "Marcus sembra sollevato. " +
                                         "È una delle rare volte in cui lo vedi così."
                         )
@@ -221,41 +254,23 @@ public class EpisodeTwo extends Episode {
                 .keyChoice()
                 .build();
 
-        Choice recruitNyxIfProtected = new Choice.Builder(
-                "Ti abbiamo salvata la vita. Adesso ci devi qualcosa.",
-                new Outcome.Builder()
-                        .woolong(0)
-                        .morale(0)
-                        .trust("marcus", -10)
-                        .flag("recruitedNyx", "true")
-                        .narrative(
-                                "Non è un invito — è un fatto. " +
-                                        "Nyx lo sa. Sale sulla nave con un'espressione " +
-                                        "che non è gratitudine, ma ci somiglia. " +
-                                        "Quanto durerà dipenderà da voi."
-                        )
-                        .build()
-        )
-                .requires(new FlagRequirement("ep2_protected_nyx", "true"))
-                .logEntry("Nyx sulla nave — per debito, non per scelta.")
-                .keyChoice()
-                .build();
-
         Scene scene4 = new Scene(
                 "ep2_s4",
                 "La stazione si sta calmando. " +
                         "Nyx è in piedi davanti al portello della Blue Mantis.\n\n" +
-                        "Marcus parla piano, solo per te: " +
+                        "Marcus ti dice all'orechio: " +
                         "\"Quella donna sa troppo sulla Helix. " +
                         "Potrebbe essere una risorsa. " +
-                        "O un problema. " +
-                        "Probabilmente tutte e due le cose.\"\n\n" +
-                        "Aaron Morrow — il vecchio partner di Marcus — " +
+                        "Sicuramente sarà un problema. " +
+                        "\n" +
+                        "Che facciamo?\"\n\n" +
+                        "All'improvviso ricordi: Aaron Morrow - il vecchio partner di Marcus - " +
                         "è sparito mentre indagava sulla Helix Corporation. " +
                         "Nessuno ha mai trovato niente. " +
-                        "Forse Nyx sa qualcosa. " +
-                        "Forse no.",
-                List.of(recruitNyx, rejectNyx, recruitNyxIfProtected)
+                        "Nyx sa qualcosa, e ti deve un favore" ,
+                List.of(recruitNyx, rejectNyx),
+                Sprites.NYX,
+                Sprites.BG_EP2
         );
 
         return List.of(scene1, scene2, scene3, scene4);

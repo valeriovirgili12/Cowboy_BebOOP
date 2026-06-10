@@ -46,11 +46,6 @@ public class OutcomeService {
             if (name.equalsIgnoreCase("marcus")) {
                 session.getMarcus().changeTrust(delta);
                 updateMarcusTrustFlag();
-            } else {
-                session.getCrew().stream()
-                        .filter(m -> m.getName().equals(name))
-                        .findFirst()
-                        .ifPresent(m -> m.changeTrust(delta));
             }
         });
     }

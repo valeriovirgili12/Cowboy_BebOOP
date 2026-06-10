@@ -19,23 +19,22 @@ public class CrewService {
     }
 
     /**
-     * Recluta Nyx con classe complementare al capitano.
+     * Recluta Nyx con classe HACKER.
      * Chiamato automaticamente quando il flag recruitedNyx viene settato.
      */
     public void recruitNyx() {
         if (getNyx().isPresent()) return; // già reclutata
-        CrewClass nyxClass = switch (session.getCaptain().getCaptainClass()) {
+        CrewClass nyxClass = CrewClass.HACKER;
+
+    /*Funzionalità non implementata, Nyx viene reclutata con classe complementare al capitano*/
+
+        /*switch (session.getCaptain().getCaptainClass()) {
             case GUNSLINGER  -> CrewClass.HACKER;
             case HACKER      -> CrewClass.GUNSLINGER;
             case BOUNTY_HUNTER, MECHANIC -> CrewClass.HACKER;
-        };
+        };*/
         Nyx nyx = new Nyx(nyxClass);
         session.recruitCrew(nyx);
-        // se Nyx è stata intimidita, parte con lealtà ridotta
-        if ("true".equals(session.getWorldState().getFlag("ep2_intimidated_nyx"))) {
-            nyx.setLoyal(false);
-            session.getWorldState().setFlag("nyxLoyal", "false");
-        }
     }
 
     /**
@@ -48,17 +47,4 @@ public class CrewService {
                 .findFirst();
     }
 
-    /**
-     * Aggiorna la lealtà di Nyx se presente.
-     */
-    public void setNyxLoyal(boolean loyal) {
-        getNyx().ifPresent(nyx -> nyx.setLoyal(loyal));
-    }
-
-    /**
-     * Restituisce true se Nyx è nella crew ed è leale.
-     */
-    public boolean isNyxLoyal() {
-        return getNyx().map(Nyx::isLoyal).orElse(false);
-    }
 }

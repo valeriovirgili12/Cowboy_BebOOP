@@ -1,12 +1,15 @@
 package it.unicam.cs.mpgc.rpg126421.controller;
 
+import it.unicam.cs.mpgc.rpg126421.model.episode.EndingContent;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
+import it.unicam.cs.mpgc.rpg126421.service.AudioService;
 import it.unicam.cs.mpgc.rpg126421.util.AppScene;
 import it.unicam.cs.mpgc.rpg126421.util.SceneManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+
+import java.util.List;
 
 /**
  * Controller della schermata finale.
@@ -18,7 +21,6 @@ public class EndingController {
     @FXML private TextArea endingSummaryArea;
     @FXML private Label finalWoolongLabel;
     @FXML private Label finalMoraleLabel;
-    @FXML private Button restartButton;
     @FXML private TextArea logArea;
 
 
@@ -29,74 +31,30 @@ public class EndingController {
     public void initEnding(GameSession session) {
         String finale = session.getWorldState().getFlag("finale");
         if (finale == null) finale = "unknown";
-
-        switch (finale) {
-            case "honest" -> {
-                endingTitleLabel.setText("See You, Space Cowboy...");
-                endingSummaryArea.setText(
-                        "Hai trasmesso tutto. Il mondo sa.\n" +
-                                "La Helix Corporation è finita. Aaron Morrow è stato vendicato.\n\n" +
-                                "Marcus guarda fuori dal finestrino senza dire nulla.\n" +
-                                "Non ne ha bisogno."
-                );
-            }
-            case "delivered" -> {
-                endingTitleLabel.setText("Justice, More or Less.");
-                endingSummaryArea.setText(
-                        "Kessler è in custodia ISSP. Per quanto durerà?\n" +
-                                "Marcus sembra quasi in pace. Quasi.\n\n" +
-                                "La Blue Mantis riparte. C'è sempre un'altra taglia."
-                );
-            }
-            case "destroyed" -> {
-                endingTitleLabel.setText("Ashes and Static.");
-                endingSummaryArea.setText(
-                        "I server Helix sono cenere.\n" +
-                                "Nessuna prova, nessun processo. Ma il sistema è morto.\n\n" +
-                                "Nyx sparisce nella notte. Come sempre."
-                );
-            }
-            case "failed_broadcast" -> {
-                endingTitleLabel.setText("Signal Lost.");
-                endingSummaryArea.setText(
-                        "I dati erano falsi. Kessler lo sapeva.\n" +
-                                "La trasmissione non ha cambiato niente.\n\n" +
-                                "Helix sopravvive. Voi anche — ma è difficile\n" +
-                                "chiamarla una vittoria."
-                );
-            }
-            case "betrayed" -> {
-                endingTitleLabel.setText("Checkmate.");
-                endingSummaryArea.setText(
-                        "Marcus ha esitato. Kessler ha letto quell'esitazione.\n\n" +
-                                "Kessler è libero. Marcus non ti guarda più.\n" +
-                                "Alcune cose, una volta rotte, non si riparano."
-                );
-            }
-            case "failed_destroy" -> {
-                endingTitleLabel.setText("System Error.");
-                endingSummaryArea.setText(
-                        "Senza Nyx non sapevate dove colpire.\n" +
-                                "La sicurezza Helix vi ha bloccati prima\n" +
-                                "dei server principali.\n\n" +
-                                "La macchina continua a girare."
-                );
-            }
-            default -> {
-                endingTitleLabel.setText("3, 2, 1 — Let's Jam.");
-                endingSummaryArea.setText(
-                        "Hai accettato l'offerta. La Blue Mantis è piena di carburante.\n" +
-                                "Marcus non ti guarda più negli occhi.\n\n" +
-                                "Ma i woolong non mentono."
-                );
-            }
-        }
-
-        finalWoolongLabel.setText("Woolong finali: ₩ " + session.getFinance().getWoolong());
-        finalMoraleLabel.setText("Morale finale: " + session.getCaptain().getMorale());
-
-        // mostra log narrativo
+        playEndingAudio(finale);
+        renderEndingText(finale);
+        renderStats(session);
         logArea.setText(session.getNarrativeLog().getSummary());
+    }
+
+    private void playEndingAudio(String finale) {
+        boolean good = List.of("killed", "destroyed", "broadcast").contains(finale);
+        SceneManager.getAudio().play(good
+                ? AudioService.Track.ENDING_GOOD
+                : AudioService.Track.GAME_OVER);
+    }
+
+    private void renderEndingText(String finale) {
+        EndingContent content = EndingContent.forFinale(finale);
+        endingTitleLabel.setText(content.title());
+        endingSummaryArea.setText(content.summary());
+    }
+
+    private void renderStats(GameSession session) {
+        finalWoolongLabel.setText("Woolong finali: ₩ " +
+                session.getFinance().getWoolong());
+        finalMoraleLabel.setText("Morale finale: " +
+                session.getCaptain().getMorale());
     }
 
     @FXML

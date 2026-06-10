@@ -1,5 +1,9 @@
 package it.unicam.cs.mpgc.rpg126421.model.episode;
 
+import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,7 +18,9 @@ public class Choice {
     private final boolean isKeyChoice; // true = scelta finale pesante
     private final int timeoutSeconds;
     private final String logEntry;
-    private final Requirement failCondition;
+    private final List<Requirement> failConditions;
+
+
 
     private Choice(Builder builder) {
         this.text         = builder.text;
@@ -23,7 +29,8 @@ public class Choice {
         this.isKeyChoice  = builder.isKeyChoice;
         this.timeoutSeconds  = builder.timeoutSeconds;
         this.logEntry        = builder.logEntry;
-        this.failCondition = builder.failCondition;
+        this.failConditions = builder.failConditions;
+
     }
 
     public String getText() { return text; }
@@ -34,26 +41,29 @@ public class Choice {
 
     public Outcome getOutcome() { return outcome; }
 
-    public boolean isKeyChoice() { return isKeyChoice; }
-
     public String getLogEntry() { return logEntry; }
 
     public boolean hasTimeout()      { return timeoutSeconds > 0; }
 
     public int getTimeoutSeconds()   { return timeoutSeconds; }
+
+    public List<Requirement>  getFailConditions() { return failConditions; }
+
+    public boolean willFail(GameSession session) {
+        return failConditions.stream()
+                .anyMatch(r -> !r.isMet(session));
+    }
+    public Requirement getFirstFailedCondition(GameSession session) {
+        return failConditions.stream()
+                .filter(r -> !r.isMet(session))
+                .findFirst()
+                .orElse(null);
+    }
     /**
      * Restituisce true se la scelta è disponibile nella sessione corrente.
      */
     public boolean isAvailable(it.unicam.cs.mpgc.rpg126421.model.session.GameSession session) {
         return requirement == null || requirement.isMet(session);
-    }
-
-    /**
-     * Verifica se la scelta fallisce in base alle condizioni della sessione.
-     * La scelta è sempre visibile, ma può produrre un outcome negativo.
-     */
-    public boolean willFail(it.unicam.cs.mpgc.rpg126421.model.session.GameSession session) {
-        return failCondition != null && !failCondition.isMet(session);
     }
 
     // ── Builder ──────────────────────────────────────────────────────────────
@@ -65,7 +75,8 @@ public class Choice {
         private Requirement requirement = null;
         private boolean isKeyChoice     = false;
         private String logEntry = "";
-        private Requirement failCondition = null;
+        private final List<Requirement> failConditions = new ArrayList<>();
+
 
 
 
@@ -96,11 +107,10 @@ public class Choice {
             this.timeoutSeconds = seconds;
             return this;
         }
-        public Builder failsIf(Requirement condition) {
-            this.failCondition = condition;
+        public Builder failsIf(Requirement r) {
+            failConditions.add(r);
             return this;
         }
-
         public Choice build() { return new Choice(this); }
     }
 }

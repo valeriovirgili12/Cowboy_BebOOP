@@ -6,7 +6,7 @@ import it.unicam.cs.mpgc.rpg126421.model.shared.CrewClass;
 /**
  * Marcus Veil — ex detective ISSP, compagno permanente.
  * Pragmatico, emotivamente represso, porta il peso di un'indagine fallita.
- * Il suo livello di fiducia determina i finali disponibili.
+ * Il suo livello di fiducia determina l'outcome di alcuni finali.
  */
 public class Marcus extends PermanentCompanion {
 
@@ -16,7 +16,7 @@ public class Marcus extends PermanentCompanion {
 
     /**
      * Reagisce alle scelte del giocatore con battute contestuali.
-     * Chiamato dopo ogni scelta chiave — il testo appare nell'UI.
+     * Chiamato dopo ogni scelta chiave — il testo appare nella UI.
      */
     @Override
     public String reactToChoice(String choiceFlag) {

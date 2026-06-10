@@ -1,6 +1,5 @@
 package it.unicam.cs.mpgc.rpg126421.service;
 
-import it.unicam.cs.mpgc.rpg126421.model.character.crew.Nyx;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Choice;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Scene;
@@ -58,19 +57,7 @@ public class GameService {
         episodeService.resolveScene(scene, choice);
     }
 
-    // ── Crew ─────────────────────────────────────────────────────────────────
 
-    public void recruitNyx() {
-        crewService.recruitNyx();
-    }
-
-    public Optional<Nyx> getNyx() {
-        return crewService.getNyx();
-    }
-
-    public boolean isNyxLoyal() {
-        return crewService.isNyxLoyal();
-    }
 
     // ── Finance ──────────────────────────────────────────────────────────────
 
@@ -79,7 +66,14 @@ public class GameService {
     }
 
     public boolean buyItem(Item item) {
-        return financeService.buyItem(item);
+        boolean paid = financeService.buyItem(item);
+        if (paid) {
+            switch (item) {
+                case RAVEN -> session.getWorldState().setFlag("pistol", "true");
+                case HELIX_ARCHIVE -> session.getWorldState().setFlag("marketArchive", "true");
+            }
+        }
+        return paid;
     }
 
     // ── Stato di gioco ───────────────────────────────────────────────────────

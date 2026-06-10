@@ -4,14 +4,9 @@ import it.unicam.cs.mpgc.rpg126421.model.character.Captain;
 import it.unicam.cs.mpgc.rpg126421.model.character.companion.Marcus;
 import it.unicam.cs.mpgc.rpg126421.model.character.crew.CrewMember;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
-import it.unicam.cs.mpgc.rpg126421.model.market.BlackMarket;
 import it.unicam.cs.mpgc.rpg126421.model.market.Item;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Contenitore principale della partita in corso.

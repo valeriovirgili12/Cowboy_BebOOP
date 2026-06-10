@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.paint.Color?>
-<?import java.net.URL?>
 
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+<?import java.net.URL?>
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="it.unicam.cs.mpgc.rpg126421.controller.GameController"
-           prefWidth="1024" prefHeight="768">
+           prefWidth="1024" prefHeight="768"
+           style="-fx-background-color: #000000;">
 
-    <stylesheets>
+
+<stylesheets>
         <URL value="@/it/unicam/cs/mpgc/rpg126421/css/bebop.css"/>
     </stylesheets>
 

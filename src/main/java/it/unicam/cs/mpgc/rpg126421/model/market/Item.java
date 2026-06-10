@@ -11,14 +11,14 @@ public enum Item {
             800,
             "Pistola modificata — silenziosa, affidabile, letale.",
             "Sblocca l'opzione di eliminazione diretta nel finale. Può evitare o causare game over.",
-            "/sprites/ui/raven.png"
+            "/it/unicam/cs/mpgc/rpg126421/sprites/ui/raven.png"
     ),
     HELIX_ARCHIVE(
             "Helix Archive",
             1200,
             "Pacchetto dati rubato dalla Helix Corporation.",
             "Potrebbe contenere prove autentiche. O potrebbe essere esca. Non lo saprai finché non sarà troppo tardi.",
-            "/sprites/ui/helix_archive.png"
+            "/it/unicam/cs/mpgc/rpg126421/sprites/ui/helix_archive.png"
 
     );
 

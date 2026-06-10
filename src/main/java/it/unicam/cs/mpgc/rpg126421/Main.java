@@ -19,6 +19,7 @@ public class Main extends Application {
 
         SceneManager.init(primaryStage);
         SceneManager.switchTo(AppScene.MAIN_MENU);
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
