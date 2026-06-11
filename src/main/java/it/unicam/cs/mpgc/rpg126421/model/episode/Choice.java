@@ -15,7 +15,6 @@ public class Choice {
     private final String text;
     private final Requirement requirement; // null = sempre disponibile
     private final Outcome outcome;
-    private final boolean isKeyChoice; // true = scelta finale pesante
     private final int timeoutSeconds;
     private final String logEntry;
     private final List<Requirement> failConditions;
@@ -26,7 +25,6 @@ public class Choice {
         this.text         = builder.text;
         this.requirement  = builder.requirement;
         this.outcome      = builder.outcome;
-        this.isKeyChoice  = builder.isKeyChoice;
         this.timeoutSeconds  = builder.timeoutSeconds;
         this.logEntry        = builder.logEntry;
         this.failConditions = builder.failConditions;

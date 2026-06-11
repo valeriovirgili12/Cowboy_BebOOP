@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg126421.controller;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Choice;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Outcome;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Scene;
+import it.unicam.cs.mpgc.rpg126421.model.episode.narrative.Ep3Script;
 import it.unicam.cs.mpgc.rpg126421.service.AudioService;
 import it.unicam.cs.mpgc.rpg126421.service.GameService;
 import it.unicam.cs.mpgc.rpg126421.util.AppScene;
@@ -15,10 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.util.Duration;
 
 import java.util.List;
@@ -87,6 +85,7 @@ public class GameController {
     }
 
     private void advance() {
+
         if (gameService.tryCompleteCurrentEpisode()) {
             startNextEpisode();
         } else {
@@ -99,6 +98,11 @@ public class GameController {
 
     private void renderScene(Scene scene) {
         updateSceneVisuals(scene);
+        if ("ep3_s0".equals(scene.getId())) {
+            Ep3Script script = new Ep3Script(gameService.getSession());
+            scene.setNarrativeText(script.scene0());
+        }
+
         if (scene.isFinalScene()) {
             renderFinalScene(scene);
             return;
@@ -138,7 +142,7 @@ public class GameController {
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(grid, javafx.scene.layout.Priority.ALWAYS);
+        HBox.setHgrow(grid, Priority.ALWAYS);
 
         ColumnConstraints col = new ColumnConstraints();
         col.setPercentWidth(50);
@@ -165,8 +169,8 @@ public class GameController {
                             "-fx-border-color:  #004d14;"+
                             "-fx-border-width: 1; -fx-padding: 12;"
             );
-            GridPane.setHgrow(card, javafx.scene.layout.Priority.ALWAYS);
-            GridPane.setVgrow(card, javafx.scene.layout.Priority.ALWAYS);
+            GridPane.setHgrow(card, Priority.ALWAYS);
+            GridPane.setVgrow(card, Priority.ALWAYS);
 
             card.getChildren().addAll(btn, buildSummaryBox(choice.getOutcome()));
             grid.add(card, positions[i][0], positions[i][1]);
@@ -178,28 +182,50 @@ public class GameController {
     // ── Scelta selezionata ────────────────────────────────────────────────────
 
     private void onChoiceSelected(Scene scene, Choice choice) {
+
         stopTimer();
 
         boolean failed = choice.willFail(gameService.getSession());
+
         gameService.resolveScene(scene, choice);
 
         Outcome outcome = failed && choice.getOutcome().hasFailureOutcome()
                 ? choice.getOutcome().getFailureOutcome()
                 : choice.getOutcome();
 
+        Ep3Script script = new Ep3Script(gameService.getSession());
+
+        String baseText = outcome.getNarrativeText();
+
+        String context = script.getContext(scene.getId());
+
         String marcusReaction = gameService.getSession().getMarcus()
                 .reactToChoice(extractMainFlag(choice));
 
-        String fullText = marcusReaction.isBlank()
-                ? outcome.getNarrativeText()
-                : outcome.getNarrativeText() + "\n\nMarcus: " + marcusReaction;
+        String fullText = baseText + context;
+
+        if (!marcusReaction.isBlank()) {
+            fullText += "\n\nMarcus: " + marcusReaction;
+        }
+
+        if (!marcusReaction.isBlank()) {
+            fullText += "\n\nMarcus: " + marcusReaction;
+        }
+
+
+        // CASO: niente testo (scene vuota o skip)
+        if (fullText == null || fullText.isBlank()) {
+            advance();
+            return;
+        }
 
         animateText(fullText);
+
         choicesBox.getChildren().clear();
         updateHUD();
 
         if (gameService.isGameOver()) {
-            showGameOver(outcome.getNarrativeText());
+            showGameOver(fullText);
             return;
         }
 

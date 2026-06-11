@@ -55,6 +55,13 @@ public abstract class Episode {
     public abstract void initialize(
             it.unicam.cs.mpgc.rpg126421.model.session.GameSession session);
 
+    //metodo helper
+    protected Scene findScene(String id) {
+        return getScenes().stream()
+                .filter(s -> s.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Scene not found: " + id));
+    }
     @Override
     public String toString() {
         return "Episode{id='" + id + "', title='" + title + "', status=" + status + "}";

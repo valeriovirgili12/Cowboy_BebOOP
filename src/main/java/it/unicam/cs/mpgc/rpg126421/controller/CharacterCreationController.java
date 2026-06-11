@@ -1,5 +1,6 @@
 package it.unicam.cs.mpgc.rpg126421.controller;
 
+import it.unicam.cs.mpgc.rpg126421.factory.EpisodeFactory;
 import it.unicam.cs.mpgc.rpg126421.model.character.Captain;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
@@ -56,13 +57,25 @@ public class CharacterCreationController {
         Captain captain = new Captain(name, characterClass);
         GameSession session = new GameSession(captain);
 
-        // carica gli episodi nella sessione
-        List<Episode> episodes = new EpisodeRepository().getAllEpisodes();
-        episodes.forEach(session::addEpisode);
+        // 1. crea episodi
+        List<Episode> episodes =
+                EpisodeFactory.createEpisodes(session);
 
-        // passa la sessione al GameController
-        GameController gameController = SceneManager.switchToAndGetController(AppScene.GAME);
-        gameController.initSession(new GameService(session));
+        // 2. repository
+        EpisodeRepository repository =
+                new EpisodeRepository(episodes);
+
+        // 3. carica in sessione
+        repository.getAllEpisodes().forEach(session::addEpisode);
+
+        // 4. service
+        GameService gameService = new GameService(session);
+
+        // 5. switch UI
+        GameController gameController =
+                SceneManager.switchToAndGetController(AppScene.GAME);
+
+        gameController.initSession(gameService);
     }
 
     @FXML

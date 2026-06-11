@@ -20,29 +20,9 @@ public class EpisodeOne extends Episode {
 
     private static List<Scene> buildScenes() {
 
-        Choice continueS0 = new Choice.Builder(
-                "[ INIZIA LA CACCIA ]",
-                new Outcome.Builder()
-                        .narrative("")
-                        .build()
-        ).build();
-
-        Scene scene0 = new Scene(
+        Scene scene0 = Scene.intro(
                 "ep1_s0",
-                "STIVA DELLA BLUE MANTIS — ORBITA SU IO\n\n" +
-                        "La nave cigola. Il carburante basta per un salto, forse due.\n" +
-                        "Marcus fissa lo schermo senza parlare.\n\n" +
-                        "Sul monitor lampeggia un avviso ISSP:\n" +
-                        "una taglia. Otto mila woolong.\n" +
-                        "Non è molto. Ma è quello che c'è.\n\n" +
-                        "A bordo ci siete voi due — tu e Marcus Veil,\n" +
-                        "ex detective ISSP, troppi anni fa.\n" +
-                        "Non parla molto del passato.\n" +
-                        "Nessuno dei due lo fa.\n\n" +
-                        "Il nome sulla scheda è Lena Morrow.\n" +
-                        "Marcus lo legge e non dice niente.\n" +
-                        "Ma la mascella si irrigidisce — appena.",
-                List.of(continueS0),
+                "STIVA DELLA BLUE MANTIS — ORBITA SU IO\n\n" + "...",
                 Sprites.LENA,
                 null
         );
@@ -51,8 +31,6 @@ public class EpisodeOne extends Episode {
         Choice findLena = new Choice.Builder(
                 "Traccia il segnale — Lena si nasconde nel settore merci",
                 new Outcome.Builder()
-                        .woolong(0)
-                        .morale(0)
                         .flag("ep1_found_lena", "true")
                         .narrative("Il segnale porta a un vecchio magazzino pressurizzato. " +
                                 "Lena Morrow è lì, con una pistola in mano e la paura negli occhi.")
@@ -60,7 +38,7 @@ public class EpisodeOne extends Episode {
         ).logEntry("Hai rintracciato Lena Morrow nel settore merci.")
                 .build();
 
-        Scene scene1 = new Scene(
+        Scene scene1 = Scene.withSprites(
                 "ep1_s1",
                 "ISSP — AVVISO TAGLIA\n\n" +
                         "Soggetto: Lena Morrow\n" +
@@ -78,14 +56,13 @@ public class EpisodeOne extends Episode {
         Choice listenToLena = new Choice.Builder(
                 "Ascoltala — cosa ha rubato esattamente?",
                 new Outcome.Builder()
-                        .woolong(0)
                         .morale(5)
                         .trust("marcus", -10)
                         .flag("ep1_listened_lena", "true")
                         .narrative("Lena parla veloce. Ha sottratto un archivio dalla Helix Corporation — " +
                                 "dati che provano come l'azienda manipoli le taglie ISSP. " +
-                                "Marcus ascolta in silenzio."+
-                                "Sembra come se fosse una scena già vissuta")
+                                "Marcus ascolta in silenzio. " +
+                                "Sembra come se fosse una scena già vissuta.")
                         .build()
         ).logEntry("Hai ascoltato la storia di Lena.")
                 .build();
@@ -93,7 +70,6 @@ public class EpisodeOne extends Episode {
         Choice grabLena = new Choice.Builder(
                 "[GUNSLINGER] Disarmala subito — le chiacchiere costano tempo",
                 new Outcome.Builder()
-                        .woolong(0)
                         .morale(-10)
                         .trust("marcus", 5)
                         .flag("ep1_listened_lena", "false")
@@ -104,7 +80,7 @@ public class EpisodeOne extends Episode {
                 .logEntry("Hai neutralizzato Lena senza ascoltarla.")
                 .build();
 
-        Scene scene2 = new Scene(
+        Scene scene2 = Scene.withSprites(
                 "ep1_s2",
                 "Lena abbassa lentamente la pistola.\n\n" +
                         "\"Non sono una criminale. Helix mi ha messa sulla lista " +
@@ -116,15 +92,14 @@ public class EpisodeOne extends Episode {
                 Sprites.BG_EP1
         );
 
-        // ── Scena 3 — La scelta su Lena (A TEMPO) ───────────────────────────
+        // ── Scena 3 — La scelta su Lena (A TEMPO) ────────────────────────────
         Choice spareLena = new Choice.Builder(
                 "Chiedigli i dati in cambio della libertà",
                 new Outcome.Builder()
-                        .woolong(0)
                         .morale(20)
                         .trust("marcus", 15)
-                        .flag("sparedLena", "true")
-                        .flag("lenaPassword", "true")
+                        .flag("ep1_spared_lena", "true")
+                        .flag("ep1_lena_password", "true")
                         .narrative("Lena tira fuori l'hard disk - poi sparisce nel corridoio. " +
                                 "Hai perso la taglia, ma hai guadagnato qualcos'altro. " +
                                 "Marcus ti guarda diversamente.")
@@ -139,13 +114,13 @@ public class EpisodeOne extends Episode {
                         .woolong(8000)
                         .morale(-15)
                         .trust("marcus", -20)
-                        .flag("sparedLena", "false")
+                        .flag("ep1_spared_lena", "false")
                         .narrative("Lena viene caricata sul trasporto ISSP. " +
                                 "Otto mila woolong sul conto. " +
                                 "Marcus non parla per il resto della giornata.")
                         .build()
         ).logEntry("Hai consegnato Lena Morrow all'ISSP.")
-                .timeout(30) // ← scatta se il giocatore non decide
+                .timeout(30)
                 .keyChoice()
                 .build();
 
@@ -155,8 +130,8 @@ public class EpisodeOne extends Episode {
                         .woolong(8000)
                         .morale(-5)
                         .trust("marcus", -10)
-                        .flag("sparedLena", "false")
-                        .flag("lenaPassword", "true")
+                        .flag("ep1_spared_lena", "false")
+                        .flag("ep1_lena_password", "true")
                         .narrative("I dati sono tuoi. Lena viene consegnata. " +
                                 "Non è pulito, ma potrebbe valere qualcosa.")
                         .build()
@@ -165,7 +140,7 @@ public class EpisodeOne extends Episode {
                 .keyChoice()
                 .build();
 
-        Scene scene3 = new Scene(
+        Scene scene3 = Scene.withSprites(
                 "ep1_s3",
                 "La polizia spaziale sta convergendo sul settore.\n\n" +
                         "Hai pochi secondi per decidere cosa fare con Lena Morrow.\n\n" +
@@ -175,13 +150,11 @@ public class EpisodeOne extends Episode {
                 Sprites.BG_EP1
         );
 
-
-        return List.of(scene1, scene2, scene3);
+        return List.of(scene0, scene1, scene2, scene3);
     }
 
     @Override
     public void initialize(GameSession session) {
-        // Logica contestuale futura:
-        // es. se Marcus trust è già bassa, modificare testo scena 2
+        // no-op
     }
 }

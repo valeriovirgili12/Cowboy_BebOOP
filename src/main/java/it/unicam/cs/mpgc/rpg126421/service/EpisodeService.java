@@ -75,17 +75,16 @@ public class EpisodeService {
     public void resolveScene(Scene scene, Choice choice) {
         boolean failed = choice.willFail(session);
         Outcome outcome = selectOutcome(choice, failed);
+        for (var entry : outcome.getFlagsToSet().entrySet()) {
+            session.getWorldState().setFlag(entry.getKey(), entry.getValue());
+        }
 
         boolean causedGameOver = outcomeService.apply(outcome);
         if (causedGameOver) gameOver = true;
 
-        if ("true".equals(session.getWorldState().getFlag("recruitedNyx"))
-                && crewService.getNyx().isEmpty()) {
-            crewService.recruitNyx();
-        }
-
         scene.complete();
         session.getNarrativeLog().add(choice.getLogEntry());
+
     }
 
     private Outcome selectOutcome(Choice choice, boolean failed) {
