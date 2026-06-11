@@ -10,7 +10,8 @@ public class PistolRequirement implements Requirement {
 
     @Override
     public boolean isMet(GameSession session) {
-        return session.getWorldState().hasFlag("pistol", "true");
+    System.out.println("Flag pistola"+ session.getWorldState().getFlag("pistol"));
+    return session.getWorldState().hasFlag("pistol", "false");
     }
 
     @Override
