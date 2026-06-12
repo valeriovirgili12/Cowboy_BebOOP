@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg126421.service;
 
 import it.unicam.cs.mpgc.rpg126421.model.market.Item;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
+import it.unicam.cs.mpgc.rpg126421.model.shared.CaptainClass;
 
 /**
  * Gestisce le operazioni finanziarie della partita.
@@ -20,7 +21,9 @@ public class FinanceService {
      * @return true se il pagamento è andato a buon fine
      */
     public boolean applyFixedCosts(int amount) {
-        return session.getFinance().spend(amount);
+        if (session.getCaptain().getCaptainClass() == CaptainClass.MECHANIC) {
+            amount = (int) (amount * 0.8);
+        }        return session.getFinance().spend(amount);
     }
 
     /**

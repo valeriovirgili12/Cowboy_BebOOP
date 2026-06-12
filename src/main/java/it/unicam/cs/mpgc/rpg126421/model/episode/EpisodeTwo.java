@@ -24,6 +24,9 @@ public class EpisodeTwo extends Episode {
         Scene scene0 = Scene.intro(
                 "ep2_s0",
                 "BLUE MANTIS — ROTTA PER EUROPA\n\n" +
+                        "Europa. Porto commerciale, livello basso.\n" +
+                        "Qualcuno qui sa qualcosa.\n" +
+                        "Lo sentite entrambi."+
                         "Quello che è successo su Io pesa ancora.\n" +
                         "Marcus non ha detto molto da quando avete lasciato la stazione.\n\n" +
                         "Il nome Helix Corporation è comparso nei dati di Lena.\n" +
@@ -33,10 +36,7 @@ public class EpisodeTwo extends Episode {
                         "Dieci anni fa stava indagando su di loro\n" +
                         "quando il suo partner — Aaron Morrow — è sparito.\n" +
                         "Nessuna traccia. Nessuna spiegazione.\n" +
-                        "Marcus ha smesso di cercare. Non sa ancora perché.\n\n" +
-                        "Europa. Porto commerciale, livello basso.\n" +
-                        "Qualcuno qui sa qualcosa.\n" +
-                        "Lo sentite entrambi.",
+                        "Marcus ha smesso di cercare. Non sa ancora perché.\n\n" ,
                 Sprites.MARCUS,
                 Sprites.BG_EP2
         );
@@ -204,7 +204,6 @@ public class EpisodeTwo extends Episode {
                         )
                         .build()
         ).logEntry("Nyx è sulla Blue Mantis. Marcus non è contento.")
-                .keyChoice()
                 .build();
 
         Choice rejectNyx = new Choice.Builder(
@@ -222,7 +221,6 @@ public class EpisodeTwo extends Episode {
                         )
                         .build()
         ).logEntry("Nyx lasciata andare. Marcus sembra sollevato.")
-                .keyChoice()
                 .build();
 
         Scene scene4 = Scene.withSprites(

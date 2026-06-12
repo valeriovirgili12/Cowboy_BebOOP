@@ -29,7 +29,7 @@ public class EndingController {
      * Chiamato da GameController con la sessione completata.
      */
     public void initEnding(GameSession session) {
-        String finale = session.getWorldState().getFlag("finale");
+        String finale = session.getWorldState().getFlag("ep3_finale");
         if (finale == null) finale = "unknown";
         playEndingAudio(finale);
         renderEndingText(finale);

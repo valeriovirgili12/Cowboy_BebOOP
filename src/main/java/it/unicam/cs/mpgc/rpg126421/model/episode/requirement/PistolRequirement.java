@@ -6,11 +6,11 @@ import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
 /**
  * Soddisfatta se il giocatore ha acquistato la pistola Raven.
  */
-public class NoPistolRequirement implements Requirement {
+public class PistolRequirement implements Requirement {
 
     @Override
     public boolean isMet(GameSession session) {
-    return session.getWorldState().hasFlag("pistol", "false");
+    return session.getWorldState().hasFlag("pistol", "true");
     }
 
     @Override

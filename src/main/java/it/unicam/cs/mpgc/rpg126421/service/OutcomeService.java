@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg126421.service;
 
 import it.unicam.cs.mpgc.rpg126421.model.episode.Outcome;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
+import it.unicam.cs.mpgc.rpg126421.model.shared.CaptainClass;
 
 /**
  * Applica un Outcome alla sessione di gioco.
@@ -31,6 +32,9 @@ public class OutcomeService {
     private void applyWoolong(Outcome outcome) {
         int delta = outcome.getWoolongDelta();
         if (delta > 0) {
+            if (session.getCaptain().getCaptainClass() == CaptainClass.BOUNTY_HUNTER) {
+                delta = (int) (delta * 1.2);
+            }
             session.getFinance().earn(delta);
         } else if (delta < 0) {
             session.getFinance().spend(-delta);

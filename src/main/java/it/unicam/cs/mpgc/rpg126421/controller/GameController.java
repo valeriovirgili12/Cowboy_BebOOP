@@ -49,13 +49,13 @@ public class GameController {
 
     public void initSession(GameService gameService) {
         initSession(gameService, 0);
+        SceneManager.getAudio().play(AudioService.Track.GAME);
     }
 
     public void initSession(GameService gameService, int episodeIndex) {
         this.gameService = gameService;
         this.currentEpisodeIndex = episodeIndex;
         updateHUD();
-        SceneManager.getAudio().play(AudioService.Track.GAME);
         startNextEpisode();
     }
 
@@ -182,45 +182,26 @@ public class GameController {
     // ── Scelta selezionata ────────────────────────────────────────────────────
 
     private void onChoiceSelected(Scene scene, Choice choice) {
-
         stopTimer();
 
-        boolean failed = choice.willFail(gameService.getSession());
-
-        gameService.resolveScene(scene, choice);
-
-        Outcome outcome = failed && choice.getOutcome().hasFailureOutcome()
-                ? choice.getOutcome().getFailureOutcome()
-                : choice.getOutcome();
-
-        Ep3Script script = new Ep3Script(gameService.getSession());
+        Outcome outcome = gameService.resolveScene(scene, choice);
 
         String baseText = outcome.getNarrativeText();
-
-        String context = script.getContext(scene.getId());
-
+        String context = new Ep3Script(gameService.getSession()).getContext(scene.getId());
         String marcusReaction = gameService.getSession().getMarcus()
                 .reactToChoice(extractMainFlag(choice));
 
         String fullText = baseText + context;
-
         if (!marcusReaction.isBlank()) {
             fullText += "\n\nMarcus: " + marcusReaction;
         }
 
-        if (!marcusReaction.isBlank()) {
-            fullText += "\n\nMarcus: " + marcusReaction;
-        }
-
-
-        // CASO: niente testo (scene vuota o skip)
-        if (fullText == null || fullText.isBlank()) {
+        if (fullText.isBlank()) {
             advance();
             return;
         }
 
         animateText(fullText);
-
         choicesBox.getChildren().clear();
         updateHUD();
 

@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg126421.model.episode;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ public class Choice {
     private final int timeoutSeconds;
     private final String logEntry;
     private final List<Requirement> failConditions;
-
+    private final List<Outcome> failureOutcomes;
 
 
     private Choice(Builder builder) {
@@ -27,9 +28,8 @@ public class Choice {
         this.outcome      = builder.outcome;
         this.timeoutSeconds  = builder.timeoutSeconds;
         this.logEntry        = builder.logEntry;
-        this.failConditions = builder.failConditions;
-
-    }
+        this.failConditions  = Collections.unmodifiableList(builder.failConditions);
+        this.failureOutcomes = Collections.unmodifiableList(builder.failureOutcomes);}
 
     public String getText() { return text; }
 
@@ -45,17 +45,17 @@ public class Choice {
 
     public int getTimeoutSeconds()   { return timeoutSeconds; }
 
-    public List<Requirement>  getFailConditions() { return failConditions; }
-
+    public Outcome getFailureOutcome(GameSession session) {
+        for (int i = 0; i < failConditions.size(); i++) {
+            if (!failConditions.get(i).isMet(session)) {
+                return failureOutcomes.get(i);
+            }
+        }
+        return null;
+    }
     public boolean willFail(GameSession session) {
         return failConditions.stream()
                 .anyMatch(r -> !r.isMet(session));
-    }
-    public Requirement getFirstFailedCondition(GameSession session) {
-        return failConditions.stream()
-                .filter(r -> !r.isMet(session))
-                .findFirst()
-                .orElse(null);
     }
     /**
      * Restituisce true se la scelta è disponibile nella sessione corrente.
@@ -71,9 +71,9 @@ public class Choice {
         private final Outcome outcome;
         public int timeoutSeconds;
         private Requirement requirement = null;
-        private boolean isKeyChoice     = false;
         private String logEntry = "";
         private final List<Requirement> failConditions = new ArrayList<>();
+        private final List<Outcome> failureOutcomes = new ArrayList<>();  // aggiungi
 
 
 
@@ -95,18 +95,15 @@ public class Choice {
             return this;
         }
 
-        public Builder keyChoice() {
-            this.isKeyChoice = true;
-            return this;
-        }
 
         public Builder timeout(int seconds) {
             if (seconds <= 0) throw new IllegalArgumentException("Timeout must be positive");
             this.timeoutSeconds = seconds;
             return this;
         }
-        public Builder failsIf(Requirement r) {
+        public Builder failsIf(Requirement r, Outcome failureOutcome) {
             failConditions.add(r);
+            failureOutcomes.add(failureOutcome);
             return this;
         }
         public Choice build() { return new Choice(this); }

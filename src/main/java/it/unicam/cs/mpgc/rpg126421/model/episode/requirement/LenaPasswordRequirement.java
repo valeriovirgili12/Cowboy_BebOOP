@@ -10,7 +10,7 @@ public class LenaPasswordRequirement implements Requirement {
 
     @Override
     public boolean isMet(GameSession session) {
-        return session.getWorldState().hasFlag("lenaPassword", "true");
+        return session.getWorldState().hasFlag("ep1_lena_password", "true");
     }
 
     @Override

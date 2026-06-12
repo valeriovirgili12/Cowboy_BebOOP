@@ -22,8 +22,10 @@ public class EpisodeOne extends Episode {
 
         Scene scene0 = Scene.intro(
                 "ep1_s0",
-                "STIVA DELLA BLUE MANTIS — ORBITA SU IO\n\n" + "...",
-                Sprites.LENA,
+                "STIVA DELLA BLUE MANTIS — ORBITA SU IO\n\n" +
+                        "State ammazzando il tempo, come sempre.\n"+
+                "Ad un tratto si accende il monitor, è arrivata un taglia.",
+                null,
                 null
         );
 
@@ -60,9 +62,10 @@ public class EpisodeOne extends Episode {
                         .trust("marcus", -10)
                         .flag("ep1_listened_lena", "true")
                         .narrative("Lena parla veloce. Ha sottratto un archivio dalla Helix Corporation — " +
-                                "dati che provano come l'azienda manipoli le taglie ISSP. " +
-                                "Marcus ascolta in silenzio. " +
-                                "Sembra come se fosse una scena già vissuta.")
+                                "dati che provano come l'azienda manipoli le taglie ISSP.\n " +
+                                "Soprattutto, la password dei server Helix\n"+
+                                "Marcus ascolta in silenzio. \n" +
+                                "Sembra come se fosse una scena già vista.")
                         .build()
         ).logEntry("Hai ascoltato la storia di Lena.")
                 .build();
@@ -105,7 +108,6 @@ public class EpisodeOne extends Episode {
                                 "Marcus ti guarda diversamente.")
                         .build()
         ).logEntry("Hai lasciato andare Lena Morrow.")
-                .keyChoice()
                 .build();
 
         Choice deliverLena = new Choice.Builder(
@@ -121,7 +123,6 @@ public class EpisodeOne extends Episode {
                         .build()
         ).logEntry("Hai consegnato Lena Morrow all'ISSP.")
                 .timeout(30)
-                .keyChoice()
                 .build();
 
         Choice sellInfo = new Choice.Builder(
@@ -137,7 +138,6 @@ public class EpisodeOne extends Episode {
                         .build()
         ).requires(new CrewClassRequirement(CaptainClass.HACKER))
                 .logEntry("Hai copiato i dati di Lena prima di consegnarla.")
-                .keyChoice()
                 .build();
 
         Scene scene3 = Scene.withSprites(

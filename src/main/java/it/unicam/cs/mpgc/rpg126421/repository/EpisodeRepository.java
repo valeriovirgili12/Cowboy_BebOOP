@@ -1,8 +1,6 @@
 package it.unicam.cs.mpgc.rpg126421.repository;
 
-import it.unicam.cs.mpgc.rpg126421.factory.EpisodeFactory;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
-import it.unicam.cs.mpgc.rpg126421.service.GameService;
 
 import java.util.List;
 import java.util.Map;

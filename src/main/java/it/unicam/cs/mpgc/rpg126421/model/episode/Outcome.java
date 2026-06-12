@@ -16,8 +16,6 @@ public class Outcome {
     private final Map<String, String> flagsToSet;
     private final String narrativeText;
     private final boolean causesGameOver;
-    private final Outcome failureOutcome;
-    private final Outcome failureOutcome2;
 
 
     private Outcome(Builder builder) {
@@ -27,8 +25,6 @@ public class Outcome {
         this.flagsToSet    = Collections.unmodifiableMap(builder.flagsToSet);
         this.narrativeText = builder.narrativeText;
         this.causesGameOver  = builder.causesGameOver;
-        this.failureOutcome = builder.failureOutcome;
-        this.failureOutcome2 = builder.failureOutcome2;
 
     }
 
@@ -37,11 +33,7 @@ public class Outcome {
     public Map<String, Integer> getTrustDeltas(){ return trustDeltas; }
     public Map<String, String> getFlagsToSet()  { return flagsToSet; }
     public String getNarrativeText()            { return narrativeText; }
-    public boolean causesGameOver() { return causesGameOver; }
-    public boolean hasFailureOutcome()  { return failureOutcome != null; }
-    public Outcome getFailureOutcome()  { return failureOutcome; }
-    public boolean hasFailureOutcome2() { return failureOutcome2 != null; }
-    public Outcome getFailureOutcome2() { return failureOutcome2; }
+    public boolean causesGameOver()             { return causesGameOver; }
     public String getSummary() {
         StringBuilder sb = new StringBuilder();
 
@@ -77,8 +69,6 @@ public class Outcome {
         private final Map<String, String>  flagsToSet  = new HashMap<>();
         private String narrativeText = "";
         private boolean causesGameOver = false;
-        private Outcome failureOutcome = null;
-        private Outcome failureOutcome2 = null;
 
 
         public Builder woolong(int delta)               { this.woolongDelta = delta; return this; }
@@ -86,14 +76,7 @@ public class Outcome {
         public Builder trust(String memberName, int d)  { trustDeltas.put(memberName, d); return this; }
         public Builder flag(String key, String value)   { flagsToSet.put(key, value); return this; }
         public Builder narrative(String text)           { this.narrativeText = text; return this; }
-        public Builder gameOver()
-        { this.causesGameOver = true; return this; }
-        public Builder onFailure(Outcome failure)
-        {this.failureOutcome = failure; return this; }
-        public Outcome build() { return new Outcome(this); }
-        public Builder onFailure2(Outcome failure) {
-            this.failureOutcome2 = failure;
-            return this;
+        public Builder gameOver()                       { this.causesGameOver = true; return this; }
+        public Outcome build()                          { return new Outcome(this); }
         }
     }
-}

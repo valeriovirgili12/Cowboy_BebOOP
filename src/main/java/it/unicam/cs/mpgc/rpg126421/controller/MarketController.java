@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg126421.controller;
 
 import it.unicam.cs.mpgc.rpg126421.model.market.BlackMarket;
 import it.unicam.cs.mpgc.rpg126421.model.market.Item;
+import it.unicam.cs.mpgc.rpg126421.model.shared.CaptainClass;
 import it.unicam.cs.mpgc.rpg126421.service.GameService;
 import it.unicam.cs.mpgc.rpg126421.util.AppScene;
 import it.unicam.cs.mpgc.rpg126421.util.SceneManager;
@@ -14,7 +15,7 @@ import javafx.scene.layout.VBox;
 
 /**
  * Controller del mercato nero.
- * Mostrato tra Episodio 1 e Episodio 2.
+ * Mostrato tra Episodio 1 ed Episodio 2.
  */
 public class MarketController {
 
@@ -32,6 +33,8 @@ public class MarketController {
         updateWoolong();
         renderItems();
         setupSideSprites();
+        gameService.getSession().getWorldState().setFlag("pistol", "false");
+        gameService.getSession().getWorldState().setFlag("marketArchive", "false");
     }
 
     private void updateWoolong() {
@@ -84,6 +87,9 @@ public class MarketController {
             messageLabel.setText(item.getDisplayName() + " acquistato.");
             btn.setDisable(true);
             updateWoolong();
+            if(item.getDisplayName().equals("Raven")) gameService.getSession().getWorldState().setFlag("pistol", "true");
+            if(item.getDisplayName().equals("Helix Archive")) gameService.getSession().getWorldState().setFlag("marketArchive", "true");
+
         } else {
             messageLabel.setText("Woolong insufficienti. Hai troppo cuore per essere un Cacciatore di Taglie...");
         }
@@ -109,6 +115,9 @@ public class MarketController {
     @FXML
     private void onLeave() {
         boolean canContinue = gameService.applyFixedCosts(1000);
+        if (gameService.getSession().getCaptain().getCaptainClass().equals(CaptainClass.MECHANIC)){
+            gameService.getSession().getFinance().earn(300);
+        }
         if (!canContinue) {
             GameOverController gameOverController =
                     SceneManager.switchToAndGetController(AppScene.GAME_OVER);

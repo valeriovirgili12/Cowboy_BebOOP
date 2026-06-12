@@ -7,7 +7,6 @@ public class Ep3Script {
     private final GameSession session;
 
     public Ep3Script(GameSession session) {
-        System.out.println("SESSION HASH = " + session.hashCode());
         this.session = session;
     }
 
@@ -67,8 +66,6 @@ public class Ep3Script {
     // ─────────────────────────────────────────────
 
     public String scene1Context() {
-        System.out.println("NYX FLAG = " +
-                session.getWorldState().getFlag("ep2_recruited_nyx"));
         return
                 "Vi fate strada nei corridoi, ancora nessuno.\n" +
                         "All'improvviso una porta con su scritto:\n[SALA DI COMANDO]...\n" +

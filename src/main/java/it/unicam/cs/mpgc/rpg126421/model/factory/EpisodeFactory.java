@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg126421.factory;
+package it.unicam.cs.mpgc.rpg126421.model.factory;
 
 import it.unicam.cs.mpgc.rpg126421.model.episode.*;
 import it.unicam.cs.mpgc.rpg126421.model.episode.narrative.Ep3Script;

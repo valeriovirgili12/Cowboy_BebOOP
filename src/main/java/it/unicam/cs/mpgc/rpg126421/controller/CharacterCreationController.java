@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg126421.controller;
 
-import it.unicam.cs.mpgc.rpg126421.factory.EpisodeFactory;
+import it.unicam.cs.mpgc.rpg126421.model.factory.EpisodeFactory;
 import it.unicam.cs.mpgc.rpg126421.model.character.Captain;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
@@ -40,7 +40,7 @@ public class CharacterCreationController {
     private void updatePerkLabel() {
         CaptainClass selected = classChoiceBox.getValue();
         if (selected != null) {
-            perkLabel.setText("Perk: " + selected.getPerk());
+            perkLabel.setText("Perk - " + selected.getPerk());
         }
     }
 

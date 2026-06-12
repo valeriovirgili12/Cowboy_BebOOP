@@ -72,9 +72,10 @@ public class EpisodeService {
      * Risolve una scena applicando la scelta del giocatore.
      * Gestisce successo e fallimento, aggiorna log e crew.
      */
-    public void resolveScene(Scene scene, Choice choice) {
+    public Outcome resolveScene(Scene scene, Choice choice) {
         boolean failed = choice.willFail(session);
         Outcome outcome = selectOutcome(choice, failed);
+
         for (var entry : outcome.getFlagsToSet().entrySet()) {
             session.getWorldState().setFlag(entry.getKey(), entry.getValue());
         }
@@ -85,23 +86,13 @@ public class EpisodeService {
         scene.complete();
         session.getNarrativeLog().add(choice.getLogEntry());
 
+        return outcome;
     }
 
     private Outcome selectOutcome(Choice choice, boolean failed) {
         if (!failed) return choice.getOutcome();
-
-        Requirement failedCondition = choice.getFirstFailedCondition(session);
-        int index = choice.getFailConditions().indexOf(failedCondition);
-
-        return switch (index) {
-            case 0 -> choice.getOutcome().hasFailureOutcome()
-                    ? choice.getOutcome().getFailureOutcome()
-                    : choice.getOutcome();
-            case 1 -> choice.getOutcome().hasFailureOutcome2()
-                    ? choice.getOutcome().getFailureOutcome2()
-                    : choice.getOutcome();
-            default -> choice.getOutcome();
-        };
+        Outcome failureOutcome = choice.getFailureOutcome(session);
+        return failureOutcome != null ? failureOutcome : choice.getOutcome();
     }
 
     public boolean isGameOver() { return gameOver; }

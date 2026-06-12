@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg126421.service;
 
 import it.unicam.cs.mpgc.rpg126421.model.episode.Choice;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Episode;
+import it.unicam.cs.mpgc.rpg126421.model.episode.Outcome;
 import it.unicam.cs.mpgc.rpg126421.model.episode.Scene;
 import it.unicam.cs.mpgc.rpg126421.model.market.Item;
 import it.unicam.cs.mpgc.rpg126421.model.session.GameSession;
@@ -53,9 +54,7 @@ public class GameService {
         return episodeService.getAvailableChoices(scene);
     }
 
-    public void resolveScene(Scene scene, Choice choice) {
-        episodeService.resolveScene(scene, choice);
-    }
+    public Outcome resolveScene(Scene scene, Choice choice) { return episodeService.resolveScene(scene, choice); }
 
 
 
